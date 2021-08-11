@@ -1,0 +1,472 @@
+﻿
+<script src="~/AngularJS/API_url.js"></script>
+<link href="~/Interface/sweetalert.css" rel="stylesheet" />
+<script src="~/AngularJS/Scripts/Product/Add.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<div class="content" ng-app="App_add" ng-controller="Ctrl_add">
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4>
+                    <i class="icon-bag position-left"></i>
+                    <span class="text-semibold"> Products Library</span>
+                </h4>
+                <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+            </div>
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <button data-toggle="modal" data-target="#modal-addproduct" class="btn btn-primary"><span class="icon-bag"></span> Add a product</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="breadcrumb-line breadcrumb-line-component">
+            <a class="breadcrumb-elements-toggle"><i class="icon-menu-open"></i></a>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="@Url.Action("Index", "Home")"><i class="icon-home2 position-left"></i> Home</a>
+                </li>
+                <li><a href="">Libraries</a></li>
+                <li class="active">Products</li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="page-header">
+
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    Add Product
+                    <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                </h5>
+                @*<div class="heading-elements">
+                        <ul class="icons-list">
+                            <li><a data-action="collapse"></a></li>
+                            <li><a data-action="close"></a></li>
+                        </ul>
+                    </div>*@
+            </div>
+
+            <div class="panel-body">
+                <form class="main-search">
+                    <div class="input-group content-group">
+                        <div class="has-feedback has-feedback-left">
+                            <input type="text" class="form-control input-lg" ng-model="searchprod" placeholder="Search">
+                            <div class="form-control-feedback">
+                                <i class="icon-search4 text-muted text-size-base"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row search-option-buttons">
+                        <div class="col-sm-6">
+                            <ul class="list-inline list-inline-condensed no-margin-bottom">
+                                <li>
+                                    <button class="btn btn-warning btn-rounded" ng-if="deactivated_ID == 0;" ng-click="loadProductsDeactivated()">View Deactivated Products</button>
+                                    <button class="btn btn-success btn-rounded" ng-if="deactivated_ID == 1;" ng-click="loadProductsActivated()">Activated Products</button>
+                                    <button class="btn btn-info btn-rounded" ng-if="isKaagapay == 0" ng-click="showPasalubong()">Show Pasalubong Only</button>
+                                    <button class="btn btn-warning btn-rounded" ng-if="isKaagapay == 1" ng-click="showKAAGAPAY()">Show KAAGAPAY Only</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="content-group">
+        <div class="panel panel-flat">
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price / Produce Packs(unit)</th>
+                            <th>Barcode ID</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="v in prodList | filter:searchprod | orderBy:'productName'">
+                        <tr>
+                            <th rowspan="{{v.pricesH.length + 1}}" scope="rowgroup">{{v.productName}}</th>
+                        </tr>
+                        <tr ng-repeat="ph in v.pricesH">
+                            <th>{{ph.price  | currency :"₱":2}} / {{ph.producePacks != null ? ph.producePacks:'0'}} {{ph.unit}}</th>
+                            <td>{{ph.barcodeID}}</td>
+                            <td><span ng-class="{'label label-success': ph.isActive == true,'label label-danger': ph.isActive == false}">{{ph.isActive == true ? 'Active':'Not Active'}}</span></td>
+                            <td>
+                                <button class="btn-success" type="button" data-toggle="modal" data-target="#modal-recover" ng-click="cdmPriceHist(ph.productID)"><i class="icon-pencil"></i></button>
+                                <button ng-click="cmdChangeProductStatus(v.productID,v.isActive)" ng-class="{'icon-x':v.isActive == true,'icon-undo':v.isActive == false}"></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> 
+                @*<div class="search-results-list">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-6" ng-repeat="p in prodList | filter:searchprod | orderBy:'productName'">
+                                <div class="panel" style="max-height:400px;min-height:400px">
+                                    <ul class="icons-list">
+                                        <li><a ng-click="cmdChangeProductStatus(p.productID,p.isActive)" ng-class="{'icon-x':p.isActive == true,'icon-undo':p.isActive == false}"></a></li>
+                                    </ul>
+                                    <div class="panel-body">
+                                        <div class="thumb thumb-fixed">
+                                            <a data-popup="lightbox" ng-click="selectPicforUpdate(p.productID)">
+                                                <img src="../product/retrieveimage/{{p.productID}}" alt="" style="min-height:200px;max-height:200px">
+                                                <span class="zoom-image"><i class="icon-image2"></i></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body panel-body-accent text-center">
+                                        <h6 class="text-semibold no-margin"><a href="#" class="text-default">{{p.productName}}</a></h6>
+                                        <ul class="list-inline list-inline-separate mb-10">
+                                            <li><a href="#" class="text-muted">{{p.categoryList.catName}}</a></li>
+                                        </ul>
+                                        <ul class="list-inline list-inline-separate mb-10">
+                                            <li><a href="#" class="text-muted">{{p.producerName}}</a></li>
+                                        </ul>
+
+                                        <div class="row">
+                                            <button type="button" class="btn bg-teal-400 btn-labeled btn-rounded" data-toggle="modal" data-target="#modal-recover" ng-click="cdmPriceHist(p.productID)"><b><i class="icon-reading"></i></b> View Price History</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+        <input style="display:none" type="file" id="imageBrowes1" />
+        <!-- /detached content -->
+        <!-- Detached sidebar -->
+        <!-- /detached sidebar -->
+        <!-- Footer -->
+        <div class="footer text-muted">
+            © 2015.
+            <a href="#">Limitless Web App Kit</a> by
+            <a href="http://themeforest.net/user/Kopyov" target="_blank">Eugene Kopyov</a>
+        </div>
+        <!-- /footer -->
+    </div>
+    <div id="modal-recover" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Form -->
+                <form class="modal-body">
+                    <div class="text-center">
+                        <div>
+                            <button class="icon-object border-warning text-warning" ng-click="hardRefresh()"><i class="icon-spinner11"></i></button>
+                            <button class="icon-object border-success text-success" data-toggle="modal" data-target="#modal-addproductprice"><i class="icon-plus3"></i></button>
+                        </div>
+                    </div>
+                    <table class="table table-responsive testprotocolsx">
+                        <thead>
+                            <tr>
+                                <th>Price</th>
+                                <th>Cost</th>
+                                <th>Barcode ID</th>
+                                @*<th ng-hide="activeEdit">Update Price</th>*@
+                                <th>Log Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="l in selectedProd">
+                                <td>{{l.price | currency :"₱":2}} </td>
+                                <td>{{l.cost | currency: "₱":2}}</td>
+                                <td>{{l.barcodeID}}</td>
+                                @*<td ng-hide="activeEdit"> <input ng-model="inputPrice[$index]" class="form-control" placeholder="pls input data" /></td>*@
+                                <td>{{l.logDate}}</td>
+                                <td><span ng-class="{'label label-success': l.isActive == true,'label label-danger': l.isActive == false}">{{l.isActive == true ? 'Active':'Not Active'}}</span></td>
+                                <td>
+                                    <button ng-click="cmdUpdatePriceStatus(l.priceID,l.isActive)" ng-class="{'btn-success': l.isActive == true, 'btn-danger':l.isActive == false}"><i class="icon-undo2"></i></button>
+                                    @*<button ng-click="cmdUpdateIsActiveFalse(l.priceID,l.isActive)" ng-if="l.isActive == false" class="btn-danger"><i class="icon-undo"></i></button>*@
+                                    @*<button ng-hide="ifActiveEdit" ng-click="cmdEditPrice(l.priceID)"><i class="icon-pencil"></i></button>*@
+                                    @*<button ng-hide="activeEdit" ng-click="cmdSaveEdit(l.priceID,inputPrice[$index])"><i class="icon-upload"></i></button>
+                                        <button ng-hide="activeEdit" ng-click="cmdCancelEdit()"><i class="icon-x"></i></button>*@
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    @*<button type="submit" class="btn bg-blue btn-block">Reset password <i class="icon-circle-right2 position-right"></i></button>*@
+                    <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Cancel</button>
+                </form>
+                <!-- /form -->
+
+            </div>
+        </div>
+    </div>
+    <div id="modal-addproductprice" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content login-form">
+                <!-- Form -->
+                <div class="modal-body">
+                    <form ng-submit="addProductPrice(item)">
+                        <div class="text-center">
+                            <div class="icon-object border-success text-success"><i class="icon-price-tag2"></i></div>
+                            <h5 class="content-group">Add Product Price<small class="display-block">All fields are required</small></h5>
+                        </div>
+                        <div class="content-divider text-semibold text-large form-group"><span>{{selectedProdName}}</span></div>
+
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input type="text" class="form-control" ng-model="item.barcodeID" placeholder="Price Barcode" required>
+                            <div class="form-control-feedback">
+                                <i class="icon-price-tag text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-8">
+                                <div class="input-group mb-5">
+                                    <span class="input-group-addon">Cost:</span>
+                                    <input required price ng-model="item.cost" style="text-align:right" type="text" class="form-control" placeholder="0.00" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"><strong>P</strong> </span>
+                                </div>
+
+                                <div class="input-group mb-5">
+                                    <span class="input-group-addon">Retail: </span>
+                                    <input required price ng-model="item.retail" type="text" style="text-align:right" class="form-control" placeholder="0.00" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"><strong>P</strong></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group mb-5">
+                                    <input type="text" value="{{getMarkup(item.wholesale,item.cost) | number:2 }} %" class="form-control {{ ( getMarkup(item.wholesale,item.cost)> 0) ? '' : 'text-danger'  }}" placeholder="0" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"> Markup</span>
+                                </div>
+                                <div class="input-group mb-5">
+                                    <input type="text" value="{{getMarkup(item.retail,item.cost) | number:2 }} %" class="form-control {{ ( getMarkup(item.retail,item.cost)> 0) ? '' : 'text-danger'  }}" placeholder="0" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"> Markup </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn bg-blue btn-block">Confirm Price<i class="icon-circle-right2 position-right"></i></button>
+                            <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="row">
+                        </div>
+                    </form>
+
+                </div>
+                <!-- /form -->
+
+            </div>
+        </div>
+    </div>
+    <div id="modal-addproduct" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content login-form">
+
+                <!-- Form -->
+                <div class="modal-body">
+                    <form ng-submit="cmdAddProduct(per,item)">
+                        <div class="text-center">
+                            <div class="icon-object border-success text-success"><i class="icon-plus3"></i></div>
+                            <h5 class="content-group">Add Product<small class="display-block">All fields are required</small></h5>
+                        </div>
+                        <div class="content-divider text-muted form-group"><span>Product Descriptions</span></div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <select id="selectCat" style="width:100%;" class="form-control" ng-model="per.categoryID">
+                                <option value="">Select Category</option>
+                                <option ng-repeat="item in categoryList" value="{{item.categoryList}}">{{item.catName}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left" ng-hide="per.categoryID == 1">
+                            <select id="selectPName" style="width:100%;" class="form-control" ng-model="per.commodityId">
+                                <option value="">Select Commodity</option>
+                                <option ng-repeat="item in commodityList" value="{{item.commodityId}}">{{item.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left" ng-show="per.categoryID == 1">
+                            <input type="text" class="form-control" ng-model="per.productName" placeholder="Product Name">
+                            <div class="form-control-feedback">
+                                <i class="icon-price-tag text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left" ng-show="per.categoryID == 1">
+                            <select id="selectProducer" style="width:100%;" class="form-control" ng-model="per.prodID">
+                                <option value="">Select Producer</option>
+                                <option ng-repeat="item in producerList" value="{{item.prodID}}">{{item.producerName}}</option>
+                            </select>
+                        </div>
+                            @*<input type="text" class="form-control" ng-model="per.unit" placeholder="Product Unit (KG or PCS)">
+                            <div class="form-control-feedback">
+                                <i class="icon-price-tag text-muted"></i>
+                            </div>*@
+                            <div class="form-group">
+                                <select class="form-control" ng-model="per.unit">
+                                    <option value="" selected>Select Type</option>
+                                    <option value="KG">KG</option>
+                                    <option value="PCS">PCS</option>
+                                    <option value="Bundle">Bundle</option>
+                                    <option value="Sack">Sack</option>
+                                </select>
+                            </div>
+                        <div class="form-group has-feedback has-feedback-left" ng-show="per.categoryID == 2 || per.categoryID == 3">
+                            <input type="text" class="form-control" ng-model="per.barcodeID" placeholder="Please input Barcode ID">
+                            <div class="form-control-feedback">
+                                <i class="icon-price-tag text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left" ng-show="per.categoryID == 1">
+                            <input type="text" class="form-control" ng-model="per.barcodeID" placeholder="Product ID in your PASALUBONG DATABASE">
+                            <div class="form-control-feedback">
+                                <i class="icon-barcode2 text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-8">
+                                <div class="input-group mb-5">
+                                    <span class="input-group-addon">Cost:</span>
+                                    <input required price ng-model="item.cost" style="text-align:right" type="text" class="form-control" placeholder="0.00" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"><strong>P</strong> </span>
+                                </div>
+                                @*<div class="input-group mb-5">
+                                        <span class="input-group-addon">Wholesale: </span>
+                                        <input price ng-model="item.wholesale" style="text-align:right" type="text" class="form-control" placeholder="0.00" ng-focus="hideAllSelect()">
+                                        <span class="input-group-addon"><strong>P</strong></span>
+                                    </div>*@
+                                <div class="input-group mb-5">
+                                    <span class="input-group-addon">Retail: </span>
+                                    <input required price ng-model="item.retail" type="text" style="text-align:right" class="form-control" placeholder="0.00" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"><strong>P</strong></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                @*<div class="input-group mb-5">
+                                        <input required ng-model="item.reOrderValue" type="text" class="form-control" placeholder="0" ng-focus="hideAllSelect()">
+                                        <span class="input-group-addon"><span class="icon-alert"></span> Re-Order</span>
+                                    </div>*@
+                                <div class="input-group mb-5">
+                                    <input type="text" value="{{getMarkup(item.wholesale,item.cost) | number:2 }} %" class="form-control {{ ( getMarkup(item.wholesale,item.cost)> 0) ? '' : 'text-danger'  }}" placeholder="0" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"> Markup</span>
+                                </div>
+                                <div class="input-group mb-5">
+                                    <input type="text" value="{{getMarkup(item.retail,item.cost) | number:2 }} %" class="form-control {{ ( getMarkup(item.retail,item.cost)> 0) ? '' : 'text-danger'  }}" placeholder="0" ng-focus="hideAllSelect()">
+                                    <span class="input-group-addon"> Markup </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn bg-blue btn-block">Upload Pic <i class="icon-circle-right2 position-right"></i></button>
+                            <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="row">
+                        </div>
+                    </form>
+                    <form action="~/Product/UploadPhoto" id="upload" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <center>
+                                <img alt="image" class="img-circle" id="imagedata" src="~/Images/icon-small-dnnk.png" style="object-fit:cover; width:120px;height:120px;padding:10px 10px 10px 10px;" onclick="i()" />
+                                <br /><small>Click the image to upload a photo</small>
+                            </center>
+                            <input onchange="upimg(this)" type="file" class="ladda-button btn btn-danger btn-file btn-block" id="img" name="img" accept="image/jpeg, image/png" style="display: none;">
+                        </div>
+                        <button type="submit" class="btn btn-danger block full-width m-b">Save</button>
+                    </form>
+                </div>
+                <!-- /form -->
+            </div>
+        </div>
+    </div>
+    <!-- /content area -->
+
+</div>
+<script>
+    $(function () {
+        $("#selectCat").select2({
+            placeholder: 'Select a Category',
+            allowClear: true
+        });
+        $("#selectPName").select2({
+            placeholder: 'Select a Commodity',
+            allowClear: true
+        });
+        $("#selectProducer").select2({
+            placeholder: 'Select a Producer',
+            allowClear: true
+        });
+    });
+</script>
+<script>
+    render();
+    function upimg(file) {
+
+        var reader = new FileReader();
+        console.log()
+        reader.onload = function (e) {
+            $("#imagedata").attr('src', e.target.result)
+        }
+        reader.readAsDataURL(file.files[0])
+    }
+    function upimgCand(file) {
+
+        var reader = new FileReader();
+
+
+        reader.onload = function (e) {
+            $("#")
+            $("#userimage").attr('src', e.target.result)
+            var formData = new FormData();
+            formData.append('file', file.files[0])
+            $("#sve").click();
+
+        }
+        reader.readAsDataURL(file.files[0]);
+
+    }
+    function i() {
+        $("#img").click()
+    }
+    function cap() {
+        $("#img").click()
+    }
+
+    function render() {
+
+        if ($("#ErrorMessage").text() == 'Upload a Picture of yourself so that we can verify your Profile.') {
+            console.log('asd')
+            $("#upload").show();
+            $("#reg").hide();
+            $("#sign_in").hide();
+        }
+        else {
+            $("#upload").hide();
+        }
+
+    }
+    var a = 0;
+    function r() {
+        $("#sign_in").hide();
+        $("#reg").show();
+    }
+    function l() {
+        $("#reg").hide();
+        $("#sign_in").show();
+    }
+    function c() {
+        if ($("#pw").val() == $("#cpw").val()) {
+            $("#su").prop("disabled", false);
+            if (a = 1) {
+                $("#conf").remove();
+                a = 0;
+            }
+        }
+        else {
+            $("#su").prop("disabled", true);
+            if (a == 0) {
+
+                $("#vali").append("<small id='conf'>Passwords does not match!</small>")
+                a = 1;
+            }
+        }
+    }
+</script>
+<script src="~/Interface/sweetalert.min.js"></script>

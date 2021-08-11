@@ -1,0 +1,528 @@
+﻿@{
+    ViewBag.Title = "Details";
+}
+<script src="~/AngularJS/Scripts/Inventory/details.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<link href="~/Interface/sweetalert.css" rel="stylesheet" />
+<script src="~/AngularJS/API_url.js"></script>
+<div class="content" ng-app="App_details" ng-controller="Ctrl_details">
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h2 class="panel-title text-center">
+                Inventory Panel & Stocks
+            </h2>
+            <h2 class="panel-title text-center underlined">
+                {{MonthToday | monthname}}
+            </h2>
+            
+            @*<div class="heading-elements">
+                    <ul class="icons-list">
+                        <li><a data-action="collapse"></a></li>
+                        <li><a data-action="reload"></a></li>
+                        <li><a data-action="close"></a></li>
+                    </ul>
+                </div>*@
+        </div>
+
+        @*<div class="panel-body">
+                <button class="btn btn-rounded btn-info" data-toggle="modal" data-target="#ManualAddStocks">Add Stocks</button>
+            </div>*@
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Stocks(unit)</th>
+                        <th>Function</th>
+                        <th>Spoilage Overall</th>
+                        <th>Price / Produce Packs(unit)</th>
+                        <th>Produce In KG/PCS</th>
+                        <th>Barcode ID</th>
+                        <th>Spoilage in Packs</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="v in vegeList | orderBy:'productName'">
+                    <tr>
+                        <th rowspan="{{v.pricesH.length + 1}}" scope="rowgroup">{{v.productName}}</th>
+                        <th rowspan="{{v.pricesH.length + 1}}" scope="rowgroup">
+                            {{v.stocks}} {{v.unit}}
+                            @*<span> <button ng-click="getProductID(v.productID,v.commodityId)" type="button" class="btn btn-success" data-toggle="modal" data-target=".bd-eresikaxample-modal-md"><i class="icon-basket"></i></button></span>*@
+                        </th>
+                        <th rowspan="{{v.pricesH.length + 1}}" scope="rowgroup">
+                            <span> <button ng-click="getProductID(v.productID,v.commodityId)" type="button" class="btn btn-success" data-toggle="modal" data-target="#resika"><i class="icon-basket"></i></button></span>
+                            <span> <button ng-click="getProductID(v.productID,v.commodityId)" type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeOverAllSpoilage"><i class="icon-book2"></i></button></span>
+                        </th>
+                        <th rowspan="{{v.pricesH.length + 1}}" scope="rowgroup">{{v.totalSpoil != null ? v.totalSpoil:'0'}} {{v.unit}}</th>
+                    </tr>
+                    <tr ng-repeat="ph in v.pricesH">
+                        <th>{{ph.price  | currency :"₱":2}} / {{ph.producePacks != null ? ph.producePacks:'0'}} {{ph.unit}}</th>
+                        <td>{{ph.producePacksInKG}} {{ph.unit}}</td>
+                        <td>{{ph.barcodeID}}</td>
+                        <td>{{ph.spoilageInPacks == null ? '0':ph.spoilageInPacks +' kg'}}</td>
+                        <td><span ng-class="{'label label-success': ph.isActive == true,'label label-danger': ph.isActive == false}">{{ph.isActive == true ? 'Active':'Not Active'}}</span></td>
+                        <td>
+                            <button class="btn-success" type="button" data-toggle="modal" data-target="#exampleModal" ng-click="toUpdateModalOpen(v,ph)"><i class="icon-pencil"></i></button>
+                            <button class="btn-info" type="button" data-toggle="modal" data-target=".bd-example-modal-sm" ng-disabled="ph.producePacks == null || ph.producePacks == 0" ng-click="removePacks(v,ph)"><i class="icon-bin"></i></button>
+                            @*<button class="btn-danger" type="button" ng-disabled="ph.producePacks == null || ph.producePacks == 0" ng-click="removeSpoilage(v,ph)"><i class="icon-trash"></i></button>*@
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Remove Packs/Pcs</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input type="number" class="form-control" ng-model="txtSpoilageItems" placeholder="Spoilage in PCS/PCK" />
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input type="text" class="form-control" ng-model="txtDescriptionByItem" placeholder="Description..." />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" ng-click="removeSpoilageItems()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Inventory</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="text-center">{{vegeList_productName}}</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Stocks Overall</th>
+                                    <th>Price Selected</th>
+                                    <th>Produced Packs</th>
+                                    @*<th>Spoilage Overall</th>*@
+                                    <th>Spoilage in Packs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{vegeList_stocks}}</td>
+                                    <td>{{priceH_price | currency :"₱":2}}</td>
+                                    <td>{{priceH_producePacks}}</td>
+                                    @*{{priceH_spoilageInPacks}}*@
+                                    @*<td><span ng-class="{'label label-success': vegeList_spoilage == null,'label label-danger': vegeList_spoilage == null}">{{vegeList_spoilage == null ? 'Nothing to show':'Not Active'}}</span></td>*@
+                                    <td><span ng-class="{'label label-success': priceH_spoilageInPacks != null,'label label-danger': priceH_spoilageInPacks == null}">{{priceH_spoilageInPacks == null ? 'Nothing to show':priceH_spoilageInPacks}}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" ng-model="txtProductPacks" placeholder="Produced Packs/Pcs" />
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" ng-model="txtProductInKG" placeholder="KG/PCS in Packs" />
+                            </div>
+                            @*<div class="col-md-4">
+                                    <input type="number" class="form-control" ng-model="txtSpoilagePacks" placeholder="Spoilage in Packs" />
+                                </div>*@
+                            <br>
+                            <br>
+                            <div class="col-md-4">
+                                <select required id="selectCat" class="form-control" ng-model="txtProductUnit">
+                                    <option value="">Select Unit</option>
+                                    <option value="KG/PCK">KG/PCK</option>
+                                    <option value="PCS">PCS</option>
+                                    @*<option value="PCK">PCK</option>*@
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <input class="form-control" ng-model="txtDescriptionPacks" placeholder="Description if any" />
+                            </div>
+                        </div>
+                        <br>
+                        <br />
+                        @*<h3 class="text-center">{{vegeList_productName}}</h3>
+                            <h4 class="text-center">{{vegeList_stocks}}</h4>
+                            <h4 ng-class="{'label label-success text-center': vegeList_spoilage == null,'label label-danger text-center': vegeList_spoilage == null}">{{vegeList_spoilage == null ? 'Nothing to show':vegeList_spoilage}}</h4>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" ng-click="updateStocks()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*<h5 class="modal-title" id="exampleModalLabel">Add Stocks</h5>*@
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form ng-submit="updateStocksOverAll()">
+                            <div class="content-divider text-muted form-group"><span>Product Descriptions</span></div>
+
+                            <div class="form-group has-feedback has-feedback-left">
+                                <input type="number" step="any" required placeholder="Please Enter how many KG" class="form-control" ng-model="txtStockOverall" />
+                                <div class="form-control-feedback">
+                                    <i class="icon-hash text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left">
+                                <input type="number" placeholder="Amount..." required class="form-control" ng-model="txtAmount" />
+                                <div class="form-control-feedback">
+                                    <i class="icon-price-tag text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left">
+                                <input placeholder="Description if any" class="form-control" ng-model="txtDescription" />
+                                <div class="form-control-feedback">
+                                    <i class="icon-design text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-change="isPasaLB()" ng-model="isPasalubong">
+                                    Is this product belongs to Pasalubong Category?
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" ng-disabled="isPasalubong" ng-click="hideDatetime()" type="radio" value="kaagapay" name="kaagapay" id="kaagapay">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Kaagapay Beneficiary
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" ng-disabled="isPasalubong" ng-click="showDatetime()" type="radio" value="dosPuntos" name="kaagapay" id="kaagapay">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    DosPuntos
+                                </label>
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left" ng-show="pakitaDate">
+                                <input type="datetime-local" class="form-control" ng-model="DP_datetime" />
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <input ng-disabled="isPasalubong" required placeholder="Search where beneficiary come from" class="form-control" ng-model="txtSearch" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button ng-disabled="isPasalubong" type="button" class="btn btn-info" ng-click="SearhWhoProdcer(txtSearch,isKaagapay,isPointSystem)">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <table class="table table-striped" ng-hide="nothingToShowSearch">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Producer Name
+                                        </th>
+                                        <th>
+                                            Municipality
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr ng-repeat="sd in searchList">
+                                        <td>
+                                            {{pakitaDate ? sd.lastName : sd.lastname}}, {{pakitaDate ? sd.firstName : sd.firstname}}
+                                        </td>
+                                        <td>
+                                            {{pakitaDate ? sd.address.barangay.cityMunicipality.name : sd.cityMunicipality}}, {{pakitaDate ? sd.address.barangay.name : sd.barangay}}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-info" ng-click="selectedProducer(sd)">Select</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            <label class="label label-success label-rounded" style="font-size:15px">{{SelectedProducerData}}</label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br />
+                            <div class="form-group">
+                                <button type="submit" class="btn bg-blue btn-block">Save</button>
+                                <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Cancel</button>
+                            </div>
+                            <div class="row">
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bd-example-modal-md" id="ManualAddStocks" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Stocks dsadasdasdad</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form ng-submit="updateStocksOverAll()">
+                            <div class="content-divider text-muted form-group"><span>Product Descriptions</span></div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <select id="selectCat4" style="width:100%;" class="form-control" ng-model="per.categoryID">
+                                            <option value="">Select Category</option>
+                                            <option ng-repeat="item in vegeList" value="{{item.productID}}">{{item.productName}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <select class="form-control" ng-model="per.class">
+                                            <option value="" selected>Select Class</option>
+                                            <option value="A">Class A</option>
+                                            <option value="B">Class B</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left">
+                                <input type="number" step="any" required placeholder="Please Enter how many KG" class="form-control" ng-model="txtStockOverall" />
+                                <div class="form-control-feedback">
+                                    <i class="icon-hash text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left">
+                                <input type="number" placeholder="Amount..." required class="form-control" ng-model="txtAmount" />
+                                <div class="form-control-feedback">
+                                    <i class="icon-price-tag text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left">
+                                <input placeholder="Description if any" class="form-control" ng-model="txtDescription" />
+                                <div class="form-control-feedback">
+                                    <i class="icon-design text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-change="isPasaLB()" ng-model="isPasalubong">
+                                    Is this product belongs to Pasalubong Category?
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" ng-disabled="isPasalubong" ng-click="hideDatetime()" type="radio" value="kaagapay" name="kaagapay" id="kaagapay">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Kaagapay Beneficiary
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" ng-disabled="isPasalubong" ng-click="showDatetime()" type="radio" value="dosPuntos" name="kaagapay" id="kaagapay">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    DosPuntos
+                                </label>
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left" ng-show="pakitaDate">
+                                <input type="datetime-local" class="form-control" ng-model="DP_datetime" />
+                            </div>
+                            <div class="form-group has-feedback has-feedback-left">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <input ng-disabled="isPasalubong" required placeholder="Search where beneficiary come from" class="form-control" ng-model="txtSearch" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button ng-disabled="isPasalubong" type="button" class="btn btn-info" ng-click="SearhWhoProdcer(txtSearch,isKaagapay,isPointSystem)">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <table class="table table-striped" ng-hide="nothingToShowSearch">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Producer Name
+                                        </th>
+                                        <th>
+                                            Municipality
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="showCantFindProucer">
+                                        <td class="text-danger text-center" colspan="2">
+                                            Sorry Can't find it in KAAGAPAY Producers Database
+                                        </td>
+                                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#manualModal">Add it</button> </td>
+                                    </tr>
+                                    <tr ng-repeat="sd in searchList">
+                                        <td>
+                                            {{pakitaDate ? sd.lastName : sd.lastname}}, {{pakitaDate ? sd.firstName : sd.firstname}}
+                                        </td>
+                                        <td>
+                                            {{pakitaDate ? sd.address.barangay.cityMunicipality.name : sd.cityMunicipality}}, {{pakitaDate ? sd.address.barangay.name : sd.barangay}}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-info" ng-click="selectedProducer(sd)">Select</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            <label class="label label-success label-rounded" style="font-size:15px">{{SelectedProducerData}}</label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br />
+                            <div class="form-group">
+                                <button type="submit" class="btn bg-blue btn-block">Save</button>
+                                <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Cancel</button>
+                            </div>
+                            <div class="row">
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="removeOverAllSpoilage" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Spoilage</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info alert-styled-left text-blue-800 content-group">
+                        <span class="text-semibold">Note!</span>
+                        <span> You're now adding Spoilage.</span>
+                        @*<button type="button" class="close" data-dismiss="alert">×</button>*@
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input type="number" class="form-control" ng-model="txtKG" placeholder="Spoilage in PCS/PCK" />
+                        <div class="form-control-feedback">
+                            <i class="icon-hash text-muted"></i>
+                        </div>
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input type="text" class="form-control" ng-model="txtDescription" placeholder="Description..." />
+                        <div class="form-control-feedback">
+                            <i class="icon-pencil3 text-muted"></i>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="removeSpoilageByKg()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="resika" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Resiko</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="alert alert-info alert-styled-left text-blue-800 content-group">
+                            <span class="text-semibold">Note!</span>
+                            <span> You're now adding "Resiko".</span>
+                            @*<button type="button" class="close" data-dismiss="alert">×</button>*@
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input required type="number" class="form-control" ng-model="txtKGresika" placeholder="Kilograms..." />
+                            <div class="form-control-feedback">
+                                <i class="icon-hash text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input required type="number" class="form-control" ng-model="txtPriceresika" placeholder="Price..." />
+                            <div class="form-control-feedback">
+                                <i class="icon-price-tag text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input required type="number" class="form-control" ng-model="txtResika" placeholder="Differences/Resiko" />
+                            <div class="form-control-feedback">
+                                <i class="icon-hash text-muted"></i>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input type="text" class="form-control" ng-model="txtDescriptionresika" placeholder="Description..." />
+                            <div class="form-control-feedback">
+                                <i class="icon-pencil3 text-muted"></i>
+                            </div>
+
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input required type="date" class="form-control" ng-model="txtDateResika" placeholder="Date..." />
+                            <div class="form-control-feedback">
+                                <i class="icon-calendar text-muted"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" ng-click="resika()">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        $("#selectCat4").select2({
+            placeholder: 'Select a Commodity',
+            allowClear: true,
+            tags: true,
+            dropdownParent: $("#ManualAddStocks")
+        });
+        $("#selectMun").select2({
+            placeholder: 'Select a Municipality',
+            allowClear: true,
+            tags: true,
+            dropdownParent: $("#manualModal")
+        });
+        $("#selectBrgy").select2({
+            placeholder: 'Select a Barangay',
+            allowClear: true,
+            tags: true,
+            dropdownParent: $("#manualModal")
+        });
+    });
+</script>

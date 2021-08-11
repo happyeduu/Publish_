@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from demo.interface.club/limitless/layout_2/LTR/default/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 22 May 2018 07:16:48 GMT -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DAVNOR KAAGAPAY</title>
+
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    @*<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/core.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/components.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/colors.css" rel="stylesheet" type="text/css">*@
+    <link href="~/Interface/admin/assets/css/icons/icomoon/styles.css" rel="stylesheet" />
+
+    <link href="~/Interface/admin/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" />
+
+    <link href="~/Interface/admin/assets/css/bootstrap.css" rel="stylesheet" />
+
+    <link href="~/Interface/admin/assets/css/core.css" rel="stylesheet" />
+
+    <link href="~/Interface/admin/assets/css/components.css" rel="stylesheet" />
+
+    <link href="~/Interface/admin/assets/css/colors.css" rel="stylesheet" />
+    <link href="~/Interface/sweetalert.css" rel="stylesheet" />
+
+    <script src="~/AngularJS/API_url.js"></script> <!-- /global stylesheets -->
+    <!-- Core JS files -->
+    @*<script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>
+        <script type="text/javascript" src="assets/js/core/libraries/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/js/core/libraries/bootstrap.min.js"></script>
+        <script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>*@
+    <script src="~/Interface/admin/assets/js/plugins/loaders/pace.min.js"></script>
+    <script src="~/Interface/admin/assets/js/core/libraries/jquery.min.js"></script>
+    <script src="~/Interface/admin/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/loaders/blockui.min.js"></script>
+    <!-- /core JS files -->
+    <!-- Theme JS files -->
+
+
+    <script src="~/Interface/admin/assets/js/plugins/visualization/d3/d3.min.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/forms/styling/switchery.min.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/forms/styling/switch.min.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/ui/moment/moment.min.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/pickers/daterangepicker.js"></script>
+
+    <script src="~/Interface/admin/assets/js/core/app.js"></script>
+    <script src="~/Interface/admin/assets/js/plugins/notifications/pnotify.min.js"></script>
+    <script src="~/AngularJS/angular.min.js"></script>
+
+    @*<script src="~/AngularJS/AdminApiUrl.js"></script>*@
+    @*<script src="~/Interface/admin/assets/js/pages/dashboard.js"></script>*@
+    <!-- /theme JS files -->
+    <script>
+        $(function () {
+            // Idle timeout
+
+            //$.sessionTimeout({
+            //    heading: 'h5',
+            //    title: 'Idle Timeout',
+            //    message: 'Your session is about to expire. Do you want to stay connected?',
+            //    warnAfter: 1000,
+            //    redirAfter: 910000,
+            //    keepAliveUrl: '#',
+            //    redirUrl: '~/../Acct/logout',
+            //    logoutUrl: '~/../Acct/logout'
+            //});
+            $("body").addClass(localStorage.getItem("miniSidebar"));
+            Pace.on('done', function () {
+                $(".content-wrapper").unblock();
+            });
+
+            $(".content-wrapper").block({
+                message: '<i class="icon-spinner spinner"></i>',
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.8,
+                    cursor: 'wait'
+                },
+                css: {
+                    border: 0,
+                    padding: 0,
+                    backgroundColor: 'none'
+                }
+            });
+        });
+    </script>
+    <style>
+        .navbar .header-highlight {
+            background-color: white;
+        }
+
+        .navbar-brand {
+            width: 250px;
+            height: 100px;
+        }
+
+            .navbar-brand > img {
+                height: 50px;
+                width: 50px;
+                margin-left: 60px;
+            }
+    </style>
+    <style>
+        @@media only screen and (min-width : 320px) {
+            .printable, .printable * {
+                display: none !important;
+            }
+        }
+
+        @@media print {
+            .no-print, .no-print * {
+                display: none !important;
+            }
+
+            .printable, .printable * {
+            }
+            /*.ggcolor tr > th{
+            background-color:#3a44ff !important;
+        }*/
+        }
+    </style>
+    
+</head>
+<body class="has-detached-right">
+
+    <div >
+        <div class="navbar navbar-default header-highlight no-print" style="">
+            <div class="navbar-header">
+                <a class="navbar-brand text-white" href="@Url.Action("Order", "transaction")">
+                    @*<img src="~/Interface/images/davnorkaagapayfinal2-01.png"   />*@
+                    <img src="~/Interface/images/icon-small-dnnk.png" alt=" ">
+                    @*<img src="~/Interface/admin/assets/images/logo_light.png" />*@
+
+                    @*<img src="~/Interface/admin/davnor-kaagapay-final.png" width="100" height="100"/>*@
+                    @*<div>KAAGAPAY</div>*@
+
+                </a>
+
+
+                <ul class="nav navbar-nav visible-xs-block">
+                    <li>
+                        <a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a>
+                    </li>
+                    <li>
+                        <a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="navbar-collapse collapse" id="navbar-mobile">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a>
+                    </li>
+
+
+                </ul>
+
+                <p class="navbar-text"><span class="label bg-success">Online</span></p>
+
+                <ul class="nav navbar-nav navbar-right">
+                    @*<li class="dropdown language-switch">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="assets/images/flags/gb.png" class="position-left" alt="">
+                            English
+                            <span class="caret"></span>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <li><a class="deutsch"><img src="assets/images/flags/de.png" alt=""> Deutsch</a></li>
+                            <li><a class="ukrainian"><img src="assets/images/flags/ua.png" alt=""> Українська</a></li>
+                            <li><a class="english"><img src="assets/images/flags/gb.png" alt=""> English</a></li>
+                            <li><a class="espana"><img src="assets/images/flags/es.png" alt=""> España</a></li>
+                            <li><a class="russian"><img src="assets/images/flags/ru.png" alt=""> Русский</a></li>
+                        </ul>
+                    </li>*@
+
+
+
+                    <li class="dropdown dropdown-user">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            @*<img src="assets/images/demo/users/face11.jpg" alt="">*@
+                            <img src="~/Interface/admin/no_photo.png" alt="Profile" />
+                            <span>@Session["fullnameFirst"]</span>
+                            <span>@Session["userType"]</span>
+                            <i class="caret"></i>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @*<li><a href="#"><i class="icon-user-plus"></i> My profile</a></li>
+                            <li><a href="#"><i class="icon-coins"></i> My balance</a></li>
+                            <li><a href="#"><span class="badge bg-teal-400 pull-right">58</span> <i class="icon-comment-discussion"></i> Messages</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="icon-cog5"></i> Account settings</a></li>*@
+
+                            <li>
+                                <a href="~/Administrator/Signout"><i class="icon-switch2"></i> Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="page-container">
+            <div class="page-content">
+                <div class="sidebar sidebar-main no-print">
+                    <div class="sidebar-content">
+
+                        <!-- User menu -->
+                        <!-- /user menu -->
+                        <!-- Main navigation -->
+                        <div class="sidebar-category sidebar-category-visible">
+                            <div class="category-content no-padding">
+                                <ul class="navigation navigation-main navigation-accordion">
+
+                                    <!-- Main -->
+                                    <li class="navigation-header">
+                                        <span>Main</span>
+                                        <i class="icon-menu" title="Main pages"></i>
+                                    </li>
+                                    @*<li class="active"><a href="index-2.html"><i class="icon-home4"></i> <span>Home</span></a></li>*@
+                                    <li>
+                                        <a href="@Url.Action("Order", "transaction")"><i class="icon-home4"></i> <span>Transaction</span></a>
+                                    </li>
+                                    @*<li>
+                                <a href="#"><i class="icon-stack2"></i> <span>Utilities</span></a>
+                                <ul>
+                                    <li><a href="@Url.Action("create", "producer")">Add Product</a></li>
+                                    <li><a href="@Url.Action("list", "producer")">Edit Product</a></li>
+
+                                </ul>
+                            </li>*@
+                                    @*<li>
+                                <a href="#"><i class="icon-copy"></i> <span>Assessed Beneficiaries</span></a>
+                                <ul>
+                                    <li><a href="@Url.Action("AssessedBeneficiaries", "Focal")" id="layout1">Approve Beneficiaries</a></li>
+                                </ul>
+                            </li>*@
+
+                                    <li class="navigation-header">
+                                        <span>Utilities</span>
+                                        <i class="icon-menu" title="Page kits"></i>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="icon-grid6"></i> <span>User Role</span></a>
+                                        <ul>
+                                            <li><a href="@Url.Action("add", "product")"><i class="icon-gift"></i>Product</a></li>
+                                            <li><a href="@Url.Action("register", "producer")"><i class="icon-folder-check"></i>Producer</a></li>
+                                            
+                                            @*<li><a href="@Url.Action("purchase", "return")">Return Purchase</a></li>*@
+                                            @*<li>@Html.ActionLink("Assign User Type", "AssignUserType", "Administrator")</li>*@
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="icon-cart"></i> <span>Manage Products</span></a>
+                                        <ul>
+                                            <li><a href="@Url.Action("details", "inventory")"><i class="icon-database2"></i>Inventory</a></li>
+                                            <li><a href="@Url.Action("AddStocks", "inventory")"><i class="icon-plus2"></i>Add Stocks</a></li>
+                                            <li><a href="@Url.Action("Spoilage", "inventory")"><i class="icon-plus-circle2"></i>Add Spoilage</a></li>
+                                            <li><a href="@Url.Action("Selling", "inventory")"><i class="icon-price-tag"></i>Bulk Selling</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                       
+                                        <a href="#"><i class="icon-wrench3"></i> <span>Service pages</span></a>
+                                        <ul>
+                                            <li><a href="@Url.Action("barcode", "generate")"><i class="icon-barcode2"></i>Generate Barcode</a></li>
+                                            <li><a href="@Url.Action("inventory", "reports")"><i class="icon-paypal"></i>Buying Report</a></li>
+                                        </ul>
+
+                                        <ul>
+                                            @*<li><a href="service_sitemap.html">Sitemap</a></li>*@
+                                            @*<li>
+                                        <a href="#">Inventory</a>
+                                        <ul>
+                                            <li><a href="@Url.Action("register", "transportninja")">Store Data</a></li>
+                                            <li><a href="@Url.Action("agileboard", "Assign")">Assign</a></li>
+                                            <li><a href="invoice_archive.html">Invoice archive</a></li>
+                                        </ul>
+                                    </li>*@
+                                            <li>
+                                                <a href="#"><i class="icon-briefcase"></i>KAAGAPAY Reports</a>
+                                                @*<li><a href="@Url.Action("register", "transportninja")">Graph</a></li>*@
+                                                <ul>
+                                                    <li>@*<a href="@Url.Action("inventory", "reports")">Buying Report</a>*@</li>
+                                                    @*<li><a href="@Url.Action("register", "transportninja")">Graph</a></li>*@
+                                                    <li><a href="@Url.Action("transaction", "reports")">Daily Sales Report</a></li>
+                                                    <li><a href="@Url.Action("BulkSales", "reports")">Bulk Sales Report</a></li>
+                                                    <li><a href="@Url.Action("InventoryEnd", "reports")">Inventory End Report</a></li>
+                                                    <li><a href="@Url.Action("ChartsBuying", "reports")">Purchased Chart Report</a></li>
+                                                    <li><a href="@Url.Action("ChartsSelling", "reports")">Bulk Selling Chart Report</a></li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a href="#"><i class="icon-briefcase3"></i>DNIPC Reports</a>
+                                                @*<li><a href="@Url.Action("register", "transportninja")">Graph</a></li>*@
+                                                <ul>
+                                                    <li>@*<a href="@Url.Action("inventory", "reports")">Buying Report</a>*@</li>
+                                                    @*<li><a href="@Url.Action("register", "transportninja")">Graph</a></li>*@
+                                                    <li><a href="@Url.Action("transaction", "DNIPCReport")">Daily Sales Report</a></li>
+                                                    @*<li><a href="@Url.Action("BulkSales", "DNIPCReport")">Bulk Sales Report</a></li>*@
+                                                    @*<li><a href="@Url.Action("InventoryEnd", "DNIPCReport")">Inventory End Report</a></li>*@
+
+                                                </ul>
+                                            </li>
+                                            @*<li>
+                                        <a href="#">Error pages</a>
+                                        <ul>
+                                            <li><a href="error_403.html">Error 403</a></li>
+                                            <li><a href="error_404.html">Error 404</a></li>
+                                            <li><a href="error_405.html">Error 405</a></li>
+                                            <li><a href="error_500.html">Error 500</a></li>
+                                            <li><a href="error_503.html">Error 503</a></li>
+                                            <li><a href="error_offline.html">Offline page</a></li>
+                                        </ul>
+                                    </li>*@
+                                        </ul>
+                                    </li>
+
+                                    <!-- /page kits -->
+
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /main navigation -->
+
+                    </div>
+                </div>
+                <div class="content-wrapper">
+                    @*<div class="content">*@
+                    @RenderBody()
+                    @*</div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- Mirrored from demo.interface.club/limitless/layout_2/LTR/default/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 22 May 2018 07:30:56 GMT -->
+</html>
+<script src="~/Interface/sweetalert.min.js"></script>

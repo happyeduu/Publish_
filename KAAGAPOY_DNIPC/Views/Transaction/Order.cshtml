@@ -1,0 +1,540 @@
+﻿@{
+    ViewBag.Title = "Order";
+}
+<script src="~/AngularJS/Scripts/Transaction/order.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<section ng-app="App_index" ng-controller="Ctrl_index" class="content">
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        @@media print {
+
+            @@page {
+                margin: 0;
+                padding: 0;
+                margin-left: -20px;
+            }
+
+            html, * {
+                visibility: hidden;
+            }
+
+            #printSection * {
+                visibility: visible;
+            }
+        }
+
+        #printSection {
+            width: 76mm;
+            height: auto;
+            padding: 0 30px;
+            /*font-family:fontA11;*/
+            visibility: hidden;
+            position: absolute;
+        }
+
+        .line-height {
+            line-height: 16px;
+        }
+    </style>
+    <div id="printSection">
+        <table style="width: 100%;">
+            <tr>
+                <td colspan="3" class="text-center">
+                    <h4 style="line-height:6px; font-size:17px"><b>DAVNOR PASALUBONG SHOP</b></h4>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-center line-height">Provincial Capitol of Davao del Norte</td>
+            </tr>
+            @*<tr>
+                <td colspan="3" class="text-center line-height text-bold" style="font-size:14px">AMASSED</td>
+            </tr>*@
+            @*<tr>
+                <td colspan="3" class="text-center line-height">NON-VAT Reg.TIN: 719-405-746-000</td>
+            </tr>*@
+            <tr>
+                <td colspan="3" class="text-center line-height" style="font-size:11px">Tel# (084) 655-9447</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-center line-height" style="font-size:11px">09985655637(SMART) | 09178405946(TM)</td>
+            </tr>
+            <tr>
+                <td><br /></td>
+            </tr>
+            <tr>
+
+                <td colspan="3" class="text-center">
+                    <h6 style="line-height:12px;"><b>ORDER SLIP</b></h6>
+                </td>
+            </tr>
+            @*<tr>
+                    <td colspan="3" class="text-center line-height">@DateTime.Now</td>
+                </tr>*@
+            <tr>
+                <td><br /></td>
+            </tr>
+            @*DETAILS*@
+            <tr ng-repeat="i in tr">
+                <td>
+                    <table style="width:100%">
+                        <tr>
+                            <td colspan="3">
+                                {{i.productName | uppercase}} {{i.producePacksInKG[0] + ' ' + i.unit[0]}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">{{i.pricePerKG == null ? (i.price |number:2): (i.pricePerKG |number:2)}} </td>
+                            <td class="text-center">X</td>
+                            <td class="text-center">{{i.qty}}</td>
+                        </tr>
+                    </table>
+                </td>i.retail * i.qty
+                <td class="text-right valign-bottom">{{i.pricePerKG == null ? (i.price * i.qty |number:2) : (i.pricePerKG * i.qty |number:2)}}</td>
+            </tr>
+            <tr style="height:7px">
+                <td>     </td>
+            </tr>
+            <tr style="border-top: 1px dashed;" class="text-bold">
+                <td style="padding-top:7px">
+                    <table>
+                        <tr>Sub-Total</tr>
+                    </table>
+                </td>
+                <td class="text-right " style="padding-top:7px">{{sTotAmt | number:0}}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:10px">
+                    Discount
+                </td>
+                <td class="text-right " style="padding-right:40px">{{discountAmt}}%</td>
+            </tr>
+            <tr class="text-bold">
+                <td>
+                    AMOUNT DUE
+                </td>
+                <td class="text-right" style="font-size:16px">{{totAmt -(totAmt * (discountAmt / 100)) |number:2}}</td>
+            </tr> 
+            <tr>
+                <td style="padding-left:20px">
+                    <table>
+                        <tr>Cash</tr>
+                    </table>
+                </td>
+                <td class="text-right valign-bottom" style="padding-right:15px;">
+                    {{tr[0].CashAmount | number:2}}
+                </td>
+            </tr>
+            <tr style="font-size:14px;">
+                <td style="padding-left:10px">
+                    <table>
+                        <tr class="text-semibold">Change</tr>
+                    </table>
+                </td>
+                <td class="text-right " style="padding-right:15px;"><b>{{tr[0].CashAmount- (totAmt -(totAmt * (discountAmt / 100))) | number:0}}</b></td>
+            </tr>
+            <tr style="height:7px">
+                <td>     </td>
+            </tr>
+            <tr style="height:7px">
+                <td>     </td>
+            </tr>
+            <tr style="border-top: 1px dashed">
+                <td style="padding-top:7px">
+                    <table>
+                        <tr class="text-left">TR#CS:{{(tr[0].ledgerID)}}</tr>
+                    </table>
+                </td>
+                <td class="text-right " style="padding-top:7px">{{tr[0].logDate | date:'MM-dd-yyyy'}}</td>
+            </tr>
+            <tr>
+                <td class="text-left" colspan="3">
+                    Cashier: {{tr[0].name}}
+                </td>
+            </tr>
+            <tr style="height:7px">
+                <td>     </td>
+            </tr>
+            <tr style="border-top: 1px dashed">
+                <td colspan="3" class="text-center" style="padding-top:7px">
+                    <h6 style="margin-bottom:0;margin-top:0;"><b>ASK FOR OFFICIAL RECEIPT</b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center" colspan="3">
+                    <svg id="barcode" style="width:60mm;margin-top:-12px"></svg>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="modal_iconified" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title"><i class="icon-menu7"></i> &nbsp;Modal with icons</h5>
+                </div>
+                <form ng-submit="addManualMode(item)">
+                    <div class="modal-body">
+                        <div class="alert alert-info alert-styled-left text-blue-800 content-group">
+                            <span class="text-semibold">You're now in Manual Mode.</span> Please input required fields.
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        </div>
+                        <h6 class="text-semibold"><i class="icon-law position-left"></i> Please Select Commodity</h6>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <select required id="selectPName" style="width:100%;" ng-change="getStocksOfProduct(item.productID)" class="form-control" ng-model="item.productID">
+                                <option value="">Select Commodity</option>
+                                <option ng-repeat="item in listProducts | orderBy:'productName'" value="{{item.productID}}">{{item.productName}} ({{item.unit}})</option>
+                            </select>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group mb-5">
+                                    <span class="input-group-addon">Kilogram:</span>
+                                    <input required  ng-model="item.qty" type="number" step="any" style="text-align:right" class="form-control" placeholder="0.00">
+                                    <span class="input-group-addon"><strong>Kg</strong> </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group mb-5">
+                                    <span class="input-group-addon">Price</span>
+                                    <input required price ng-model="item.pricePerKG" type="number" step="any" style="text-align:right" type="text" class="form-control" placeholder="0.00">
+                                    <span class="input-group-addon"><strong>₱</strong> </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 text-right">
+                                 <label class="text-green-800 text-size-large"><b>Amount: ₱{{item.qty * item.pricePerKG | number:0}}</b></label>
+                            </div>
+                            @*<div class="col-sm-4">
+                                    <div class="input-group mb-5">
+                                        <input required ng-model="item.qty" type="number" step="any" class="form-control" placeholder="0.00">
+                                        <span class="input-group-addon"><span class="icon-basket"></span> Kilogram</span>
+                                    </div>
+                                </div>*@
+                        </div>
+                        @*<h6 class="text-right">
+                                <label class="text-semibold text-muted">AMOUNT DUE</label>
+                                <span class="text-right text-semibold text-primary" style="font-size:28px"> {{item.pricePerKG * item.qty || 00 | number:2}} <text style="font-size:14px">php</text></span>
+                            </h6>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-link" data-dismiss="modal"><i class="icon-cross"></i> Close</button>
+                        <button type="submit" class="btn btn-primary"><i class="icon-check"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-detached">
+        <div class="content-detached">
+            <div id="mainForm" class="animated">
+                <table class="table table-responsive">
+                    <tbody>
+                        <tr>
+                            <th>
+                                <ul class="fab-menu fab-menu-absolute fab-menu-top-left affix-top" data-fab-toggle="click" data-fab-state="closed">
+                                    <li>
+                                        <div class="text-center">{{mode}}&nbsp;&nbsp;</div>
+                                        <div class="checkbox checkbox-switchery" style="margin-left:20px">
+                                            <label>
+                                                <input type="checkbox" class="switchery-info" ng-model="per.isActive" ng-change="changeMode(per)" style="display: none;">
+                                                <span ng-if="per.isActive" class="switchery switchery-default" style="background-color: rgb(0, 188, 212); border-color: rgb(0, 188, 212); box-shadow: rgb(0, 188, 212) 0px 0px 0px 12px inset; transition: border 0.4s ease 0.5s, box-shadow 0.4s ease 0.5s, background-color 1.2s ease 0s; ">
+                                                    <small style="left: 22px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small>
+                                                </span>
+                                                <span ng-if="!per.isActive" class="switchery switchery-default" style="background-color: rgb(255, 255, 255); border-color: rgb(223, 223, 223); box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; transition: border 0.4s ease 0.5s, box-shadow 0.4s ease 0.5s; ">
+                                                    <small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;">
+                                                    </small>
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                    </li>
+
+                                </ul>
+                            </th>
+                            <th style="width:750px;padding-left:80px">
+                                <div>
+                                    <div class="page-header-content bg-teal-400">
+                                        <div class="page-title" style="padding-top: 10px;padding-bottom: 12px;">
+                                            <div class=" has-feedback has-feedback-left">
+
+                                                <input id="scanBarcode" ng-change="barcodeChange()" type="search" class="form-control input-xlg" placeholder="Scan or type Item(s) Barcode here ..." ng-model="itemCode" my-enter="additems();scanFocus=true" focus-me="scanFocus" autofocus>
+                                                <div class="form-control-feedback">
+                                                    <i class="icon-search4 text-size-base text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_iconified" ng-click="focusSelectCommodity()">MANUAL MODE</button>
+                                @*<button type="button" class="btn bg-success-700 btn-block" ng-click="enterCash()"><i class="icon-pencil position-left"></i>Change Amount</button>*@
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div style="padding-top:10px">
+                        <div class="col-xs-2 text-center">
+                        </div>
+                        <div class="col-xs-8">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel panel-flat" style=" margin-top: 20px; ">
+                    <div class="table-responsive">
+                        <table class="table text-nowrap">
+                            <thead>
+                                <tr class="active border-double">
+                                    <td class="text-semibold" colspan="5">ORDER DETAILS</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-double" ng-repeat="i in listItems">
+                                    <td style="width:50px">
+                                        <div class="media-left media-middle">
+                                            @*<a href="#"><img src="~/images/image.png" class="img-circle img-xs" alt="" ></a>*@
+                                            @*<div class="text-muted "><i class="icon-qrcode icon-3x position-absolute" style="width:40px!important;height:60px!important"></i></div>*@
+                                            @*<div class="text-muted text-center"><i class="icon-barcode2 text-size-mini position-left" style="font-size:14px"></i>{{i.barcodeID}}</div>*@
+                                        </div>
+                                        <div class="media-left">
+                                            <div class="text-semibold" style="font-size:17px; color:#1e88e5">{{i.productName[0] | uppercase}}</div>
+                                            <div class="text-muted text-size-small" style="font-size:13px"><i class="icon-package text-size-mini position-left" style="font-size:14px"></i>{{i.category[0]}}</div>
+                                            <div class="text-muted text-center"><i class="icon-barcode2 text-size-mini position-left" style="font-size:14px"></i>{{i.barcodeID}}</div>
+                                        </div>
+                                    </td>
+                                    <td class="text-semibold" style="font-size:14px">
+                                        <div class="media-left media-middle">
+                                            <div class="text-muted " style="font-size: 14px; color: #1e88e5">Produce Packs</div>
+                                            <div class="text-muted text-center underlined" style="color:green">{{i.producePacksInKG}} {{i.unit}}</div>
+                                        </div>
+                                    </td>
+                                    <td class="text-semibold" style="font-size:14px">
+                                        @*Stocks: {{i.producePacks | number:2}}*@
+                                        <div class="media-left media-middle">
+                                            @*<a href="#"><img src="~/images/image.png" class="img-circle img-xs" alt="" ></a>*@
+                                            <div class="text-muted " style="font-size: 14px; color: #1e88e5">STOCKS</div>
+                                            <div class="text-muted text-center underlined" style="color:green">{{i.producePacks != null ? i.producePacks+' ' + 'PCK':i.stocks+' '+i.unit}} </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-semibold text-grey-400 text-right" style="font-size:18px"><span>&#8369;</span> {{i.price | number:2}}</h6>
+                                    </td>
+                                    <td class="row">
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-danger btn-number" ng-init="i.qty" ng-disabled="i.qty<2" ng-click="qtyChange($index, 1)">
+                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                </button>
+                                            </span>
+                                            <div class="col-sm-2">
+                                                <input type="number" ng-model="i.qty" ng-change="qtyChange()" class="form-control text-warning" style="text-align: center;font-size:18px; width:60px">
+                                            </div>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success btn-number" ng-disabled="i.producePacks != null ?  i.qty>=i.producePacks : i.qty>=i.stocks" ng-click="qtyChange($index, 2)">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-semibold text-primary-600 text-right" style="font-size:18px"><span>&#8369;</span> {{i.price*i.qty | number:0}}</h6>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <button type="button" class="btn border-danger text-danger-600 btn-flat btn-icon btn-rounded" ng-click="removeItem($index)"> <i class="icon-x"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="searchItem" class="panel panel-flat animated" style="margin-top:10px;display:none">
+                <div class="panel-heading">
+                    <div>
+                        <div class="page-header-content bg-indigo-400">
+                            <div class="page-title" style="padding-top: 10px;padding-bottom: 12px;">
+                                <div class=" has-feedback has-feedback-left">
+                                    <input id="typeItemDesc" type="search" class="form-control input-xlg" placeholder="Search Item here..." ng-model="itemDEsc" my-enter="additems();scanFocus=true" focus-me="scanFocus">
+                                    <div class="form-control-feedback">
+                                        <i class="icon-search4 text-size-base text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6" style="padding-bottom:20px">
+                            <div class="media stack-media-on-mobile">
+                                <div class="media-left">
+                                    <div class="thumb">
+                                        <a href="#" onclick="showSearchItem()">
+                                            <img src="~/images/image.png" class="img-responsive img-rounded media-preview" alt="">
+                                            <span class="zoom-image"><i class="icon-play3"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="media-heading text-primary">Up unpacked friendly</h6>
+                                    <ul class="list-inline list-inline-separate text-muted mb-5">
+                                        <li><i class="icon-book-play position-left"></i> Video tutorials</li>
+                                        <li>14 minutes ago</li>
+                                    </ul>
+                                    The him father parish looked has sooner. Attachment frequently gay terminated son...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6" style="padding-bottom:20px">
+                            <div class="media stack-media-on-mobile">
+                                <div class="media-left">
+                                    <div class="thumb">
+                                        <a href="#">
+                                            <img src="~/images/image.png" class="img-responsive img-rounded media-preview" alt="">
+                                            <span class="zoom-image"><i class="icon-play3"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="media-heading text-primary">Up unpacked friendly</h6>
+                                    <ul class="list-inline list-inline-separate text-muted mb-5">
+                                        <li><i class="icon-book-play position-left"></i> Video tutorials</li>
+                                        <li>14 minutes ago</li>
+                                    </ul>
+                                    The him father parish looked has sooner. Attachment frequently gay terminated son...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-detached">
+        <div class="sidebar sidebar-default sidebar-separate">
+            <div class="sidebar-content">
+                <div class="tabbable sortable">
+                    <div class="tab-content">
+                        <div class="tab-pane active no-padding" id="components-tab">
+                            <div class="sidebar-category">
+                                <div class="category-content" style="padding: 10px 10px 0 8px">
+                                    <div class="content-group">
+                                        <ul class="list-condensed list-unstyled invoice-payment-details">
+                                            <li><text class="text-muted" style="font-size:13px">PAYMENT DETAILS</text></li>
+                                            <hr style="margin-top:0;" />
+                                            <li>
+                                                <h3 style="margin-top:0;">
+                                                    Sub-total
+                                                    <span class="stext-semibold text-primary-800"><b>{{subTot | number:0}}</b> <text style="font-size:14px">php</text></span>
+                                                </h3>
+                                            </li>
+                                            <li style="padding-left:10px;">
+                                                @*<h5>
+                                                    Discount
+                                                    <span class="stext-semibold text-warning"><b>{{00 | number:2}}</b> <text style="font-size:14px">php</text></span>
+                                                </h5>*@
+                                                <input type="search" class="form-control input-xlg" placeholder="Discount... in %" ng-model="discountAmt" style="margin-bottom:10px;text-align:center;border-color:teal;color:green;font-size:22px">
+                                            </li>
+                                            <li># of Item(s)  <span class="text-semibold">{{totQty}}</span></li>
+                                            <li>
+                                                <h6>
+                                                    <text class="text-semibold text-muted">AMOUNT DUE</text>
+                                                    <span class="text-right text-semibold text-primary" style="font-size:28px"> {{tolDue -(tolDue * (discountAmt / 100)) | number:2}} <text style="font-size:14px">php</text></span>
+                                                </h6>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="category-content" style="padding: 10px 10px 0 8px">
+                                    <div class="content-group">
+                                        <input type="search" class="form-control input-xlg" placeholder="Enter Cash Amount" ng-model="cashAmt" ng-change="cashAmountDetails(cashAmt)" style="margin-bottom:10px;text-align:center;border-color:teal;color:green;font-size:22px" focus-me="focusAccount" ng-hide="showInputCash">
+                                        <ul class="list-condensed list-unstyled invoice-payment-details" ng-hide="cashDetails">
+                                            <hr style="margin-top:0;" />
+                                            <li>
+                                                <h5>
+                                                    Cash Amount
+                                                    <span class="stext-semibold text-teal"><b>{{cashAmount | number:2}}</b> <text style="font-size:14px">php</text></span>
+                                                </h5>
+                                            </li>
+                                            <li style="padding-left:10px">
+                                                <h3 style="margin-top:0;">
+                                                    <text class="text-semibold">Change</text>
+                                                    <span class="stext-semibold text-danger-800"><b>{{changeAmount | number:2}}</b> <text style="font-size:14px">php</text></span>
+                                                </h3>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="category-content" style="padding: 0 10px 0 8px" ng-hide="cashDetails">
+                                    <div class="content-group">
+
+                                        <div class="mb-10">
+                                            @*<button type="button" class="btn bg-success-700 btn-block" ng-click="enterCash()"><i class="icon-pencil position-left"></i>Change Amount</button>*@
+                                            <button type="button" class="btn bg-warning-700 btn-block btn-xlg" ng-disabled="changeAmount < 0 " ng-click="saveAllDetails()" style="margin-top:2px;height:50px"><i class="icon-cash4 position-left"></i>PAY OUT</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+
+    function showSearchItem() {
+
+        if ($('#searchItem').hasClass('bounceInLeft')) {
+
+            $('#payOut').removeClass('disabled');
+            //out anf searchItem
+            $('#searchItem').addClass('bounceOutLeft');
+            $('#searchItem').removeClass('bounceInLeft');
+            $('#searchItem').css('display', 'none');
+            //in ang mainForm
+            $('#mainForm').removeClass('bounceOutRight');
+            $('#mainForm').css('display', 'block');
+            $('#mainForm').addClass('bounceInRight');
+
+            $('#scanBarcode').focus();
+
+        } else {
+            $('#payOut').addClass('disabled');
+            //$('#mainForm').hide();
+            //out ang mainform
+            $('#mainForm').addClass('bounceOutRight');
+            $('#mainForm').css('display', 'none');
+            //in ang searcItem
+            $('#searchItem').removeClass('bounceOutLeft');
+            $('#searchItem').css('display', 'block');
+            $('#searchItem').addClass('bounceInLeft');
+
+            $('#typeItemDesc').focus();
+
+
+        }
+
+    }
+
+</script>
+<script>
+    $(function () {
+
+        $("#selectPName").select2({
+            placeholder: 'Select a Product',
+            allowClear: true
+
+        });
+
+    });
+</script>

@@ -1,0 +1,269 @@
+﻿@{
+    ViewBag.Title = "Inventory";
+}
+<script src="~/AngularJS/Scripts/Reports/inventory.js"></script>
+<link href="~/Content/print.css" rel="stylesheet" />
+<link href="~/Content/print_design.css" rel="stylesheet" />
+<section ng-app="App_inventory" ng-controller="Ctrl_inventory">
+    <div class="content-wrapper hideThis" style="width:100%;display:inline-block">
+        <div class="page-header">
+            <div class="page-header-content hideThis">
+                <div class="page-title">
+                    <h4>
+                        <i class="icon-arrow-left52 position-left"></i>
+                        <span class="text-semibold">Reports </span> - Inventory
+                    </h4>
+                    <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                </div>
+            </div>
+            <div class="content" ng-show="hideWhenPrint">
+                <div class="panel panel-flat">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                        </h5>
+                        <div class="heading-elements">
+                            <ul class="icons-list">
+                                <li><a data-action="collapse"></a></li>
+                                <li><a data-action="reload"></a></li>
+                                <li><a data-action="close"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                @*<div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                                    <input type="date" ng-model="searchD" ng-change="changeDate(searchD)" class="form-control daterange-single" value="03/18/2013">
+                                </div>*@
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                                    <input type="text" class="form-control" name=" daterange" id="demo" />
+                                </div>
+
+                                    @*<input type="text" id="salesrange" ng-model="searchD" ng-change="changeDate(searchD)" class="form-control daterange-basic">*@
+                             
+                                @*<div id="salesrange" class="cursor-pointer">
+                                    <i class="fa fa-calendar"></i>&nbsp;
+                                    <span>
+                                        {{ startDate | date : 'longDate'}} to {{ endDate | date : 'longDate'}}
+                                    </span>
+                                    <i class="fa fa-caret-down"></i>
+                                </div>*@
+                           
+                            </div>
+                           
+                            @*<div class="col-md-1" style="margin-left:-20px">
+                                <button class="btn" ng-click="removeDate()">X</button>
+                            </div>*@
+                            <div class="col-md-3" style="margin-left:-50px">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-search4"></i></span>
+                                    <input type="text" placeholder="Search..." ng-model="search" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-2" ng-hide="hideMeNot">
+                                <button type="submit" class="btn bg-teal btn-block" ng-click="loadInventoryLogsPasalubong(searchD)">SHOW PASALUBONG</button>
+                            </div>
+                            <div class="col-md-2" ng-hide="hideMe">
+                                <button type="submit" class="btn bg-green-700 btn-block" ng-click="showAll(searchD)">SHOW KAAGAPAY</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn bg-gray-light btn-block" ng-click="print()">Print Preview</button>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Municipality</th>
+                                    <th>Producer Name</th>
+                                    @*<th>Date</th>*@
+                                    <th>Product Name</th>
+                                    <th>QTY (kg)</th>
+                                    <th>Price</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="x in inventoryLogs | filter:search | orderBy:'-logDate'">
+                                <tr>
+                                    <th rowspan="{{x.listArr.length + 1}}" scope="rowgroup">{{x.municipalityName != null ? x.municipalityName + ', ' + x.barangayName : 'Pasalubong Shop'}}</th>
+
+
+                                    @*<th rowspan="{{x.listArr.length + 1}}" scope="rowgroup">{{x.logDate | date:'mediumDate'}}</th>*@
+                                </tr>
+                                <tr ng-repeat="d in x.listArr">
+                                    <td>{{d.producerName | uppercase}}</td>
+                                    @*<td>{{d.producerID != 'PASALUBONG PRODUCT' ? d.deposit + ' kls' : d.deposit + ' pcs'}}</td>
+                                        <td>{{d.amount | currency :"₱":2}}</td>*@
+                                    <td>
+                                        <span ng-repeat="m in d.listMun">{{m.productName}} {{m.classType}}<br /> </span>
+                                    </td>
+                                    <td >
+                                        <span ng-repeat="m in d.listMun">{{m.producerID != 'PASALUBONG PRODUCT' ? m.deposit @*+ ' kg'*@ : m.deposit @*+ ' pcs'*@}}<br /></span>
+                                    </td>
+                                    <td>
+                                        <span ng-repeat="m in d.listMun">{{m.amount | currency :"₱":2}}<br /></span>
+                                    </td>
+                                    <td>
+                                        <span ng-repeat="m in d.listMun">{{(m.amount * m.deposit) | currency :"₱":2}}<br /></span>
+                                    </td>
+                                    <td>
+                                        {{d.date[0].date | date:'mediumDate'}}
+                                    </td>
+                                    <td><b>{{d.perBeneficiary | currency :"₱":2}}</b></td>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right"><b>{{x.municipalityName != null ? x.municipalityName + ', ' + x.barangayName : 'Pasalubong Shop'}} = </b></td>
+                                    <td><b>Grand Total {{x.grandTotal | currency :"₱":2}}</b></td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div id="printPage" class="page ibox float-e-margins" ng-show="showPrintData">
+        <div class="row content-wrapper panel">
+            <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12">
+                <button class="btn bg-gray-light hideThis" ng-click="back()"> Back </button>
+                <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 hideThis" style="text-align:center;margin-top:30px">
+                    <button onclick="window.print(); return false;" class="btn btn-primary style=" type="button">
+                        <i class="fa fa-print "></i>&nbsp;Print
+                    </button>
+                </div>
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-sm-12 heading top-space text-center">PROVINCE OF DAVAO DEL NORTE</div>
+                    <div class="col-sm-12 heading text-center">DAVAO DEL NORTE INVESTMENT AND PROMOTION CENTER</div>
+                    <div class="col-sm-12 head-address text-center">Mankilam, Tagum City</div>
+                </div>
+                <div class="row title-row">
+                    <div class="col-sm-12 heading">BUYING REPORTS</div>
+                </div>
+                <div class="row " style="margin-top:30px;">
+                    <div class="col-sm-9 col-lg-9 col-md-9 col-xs-9 content-text">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4" style="margin-top:-50px;margin-left:-35px">
+                            <p class=" text-muted text-center"><svg id="barcodeNature"></svg></p>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 col-lg-1 col-md-1 col-xs-1 content-text">DATE</div>
+                    <div class="col-sm-2 col-lg-2 col-md-2 col-xs-2 content-text-value" >{{printDate }}</div>
+                </div>
+                <div class="row" style="margin-top:12px;">
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text" style="text-align:left"><b>TO WHOM IT MAY CONCERN</b></div>
+                </div>
+                <div class="row" style="margin-top:16px;">
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 " style="text-align:left">
+                        <p>All items stated below were being paid by <b>MS. JOEVYNAR M. MIEDES III of PADO-DNIPC</b> Pasalubong Shop Davao del Norte.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr style="border:2px solid black;" />
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px">
+                    <div class="table-responsive" style="overflow:hidden">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Municipality</th>
+                                    <th>Producer Name</th>
+                                    @*<th>Date</th>*@
+                                    <th>Product Name</th>
+                                    <th>QTY (kg)</th>
+                                    <th>Price</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="x in inventoryLogs | filter:search | orderBy:'-logDate'">
+                                <tr>
+                                    <th rowspan="{{x.listArr.length + 1}}" scope="rowgroup">{{x.municipalityName != null ? x.municipalityName + ', ' + x.barangayName : 'Pasalubong Shop'}}</th>
+
+
+                                    @*<th rowspan="{{x.listArr.length + 1}}" scope="rowgroup">{{x.logDate | date:'mediumDate'}}</th>*@
+                                </tr>
+                                <tr ng-repeat="d in x.listArr">
+                                    <td>{{d.producerName | uppercase}}</td>
+                                    @*<td>{{d.producerID != 'PASALUBONG PRODUCT' ? d.deposit + ' kls' : d.deposit + ' pcs'}}</td>
+                <td>{{d.amount | currency :"₱":2}}</td>*@
+                                    <td>
+                                        <span ng-repeat="m in d.listMun">{{m.productName}} {{m.classType}}<br /> </span>
+                                    </td>
+                                    <td>
+                                        <span ng-repeat="m in d.listMun">{{m.producerID != 'PASALUBONG PRODUCT' ? m.deposit @*+ ' kg'*@ : m.deposit @*+ ' pcs'*@}}<br /></span>
+                                    </td>
+                                    <td>
+                                        <span ng-repeat="m in d.listMun">{{m.amount | currency :"₱":2}}<br /></span>
+                                    </td>
+                                    <td>
+                                        <span ng-repeat="m in d.listMun">{{(m.amount * m.deposit) | currency :"₱":2}}<br /></span>
+                                    </td>
+                                    <td>
+                                        {{d.date[0].date | date:'mediumDate'}}
+                                    </td>
+                                    <td><b>{{d.perBeneficiary | currency :"₱":2}}</b></td>
+                                <tr style="border:solid ">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right"><b>{{x.municipalityName != null ? x.municipalityName + ', ' + x.barangayName : 'Pasalubong Shop'}} = </b></td>
+                                    <td><b>Grand Total {{x.grandTotal | currency :"₱":2}}</b></td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr style="border:2px solid black;" />
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        @*<b>AMOUNT IN WORDS:</b>*@
+                        @*<span style="margin-left:20px;">{{ledgerDetails[0].grandTotal | words | uppercase}}&nbsp;PESOS.</span>*@
+                    </div>
+
+                </div>
+
+                <div class="row" style="margin-top:32px;">
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title">
+                        <b><b>@Session["Uname"]</b></b>
+                    </div>
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title">@*<b>GIL F. BELENSON, JR.</b>*@</div>
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><b>JOEVYNAR M. MIEDES</b></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>Prepared By</small></div>
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title">@*<small>SEMS-Mines Divison</small>*@</div>
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>DMO III/LIEPO Designate</small></div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</section>

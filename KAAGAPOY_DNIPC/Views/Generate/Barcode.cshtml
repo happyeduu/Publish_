@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "Barcode";
+}
+<script src="~/AngularJS/Scripts/Generate/Barcode.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<script src="~/AngularJS/NODE/JSBarcode.min.js"></script>
+<script src="~/AngularJS/NODE/qrCode.js"></script>
+<link href="~/Content/id.css" rel="stylesheet" />
+<style>
+    @@media only screen and (min-width : 320px) {
+        .printable, .printable * {
+            display: none !important;
+        }
+    }
+
+    @@media print {
+        .no-print, .no-print * {
+            display: none !important;
+        }
+
+        .printable, .printable * {
+        }
+        /*.ggcolor tr > th{
+            background-color:#3a44ff !important;
+        }*/
+    }
+</style>
+
+<section ng-app="app_barcode" ng-controller="Ctrl_barcode" >
+    <div class="content-wrapper hideThis" style="width:100%;display:inline-block">
+
+        <div class="page-header">
+            <div class="page-header-content no-print">
+                <div class="page-title">
+                    <h4>
+                        <i class="icon-arrow-left52 position-left"></i>
+                        <span class="text-semibold">Reports</span> - Transactions
+                    </h4>
+                    <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                </div>
+                <div class="heading-elements">
+                    <div class="heading-btn-group">
+                        <a href="#" class="btn btn-link btn-float has-text" ng-click="printPage()" ng-show="hideWhenPrint"><i class="icon-printer text-primary"></i><span>Show Printable Data</span></a>
+                        <a href="#" class="btn btn-link btn-float has-text" ng-show="showPrintData" ng-click="GoBack()"><i class="icon-redo2 text-primary"></i> <span>Go Back</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="panel panel-flat">
+                    <div class="panel-heading no-print">
+                        <h5 class="panel-title">
+                            Basic responsive table
+                            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                        </h5>
+                        <div class="heading-elements">
+                            <ul class="icons-list">
+                                <li><a data-action="collapse"></a></li>
+                                <li><a data-action="reload"></a></li>
+                                <li><a data-action="close"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel-body no-print">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group has-feedback has-feedback-left">
+                                    <select required id="selectPName" style="width:100%;" ng-change="getPriceAndStocks(productID)" class="form-control" ng-model="productID">
+                                        <option value="">Select Commodity</option>
+                                        <option ng-repeat="item in listProducts | orderBy:'productName'" value="{{item.productID}}">{{item.productName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group has-feedback has-feedback-left">
+                                    <select required id="selectPrice" style="width:100%;" class="form-control" ng-model="priceID">
+                                        <option value="">Select Price</option>
+                                        <option ng-repeat="item in listPrice[0].pricesH" value="{{item.barcodeID}}">{{item.price | currency :"₱":2}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-cart-add2"></i></span>
+                                    <input type="text" ng-model="qty" class="form-control daterange-single" placeholder="Enter quantity">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-block btn-info" ng-click="generateBarcode()">Generate</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel " id="printable" style="width: 100%;">
+                        <div class="table-responsive">
+                            <table class="table" id="tableP"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+
+        $("#selectPName").select2({
+            placeholder: 'Select a Product',
+            allowClear: true
+
+        });
+
+        $("#selectPrice").select2({
+            placeholder: 'Select Price',
+            allowClear: true
+
+        });
+    });
+</script>

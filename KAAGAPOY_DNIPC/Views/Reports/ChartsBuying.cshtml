@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Charts";
+}
+<script src="~/AngularJS/NODE/chartjs-plugin.js"></script>
+<script src="~/AngularJS/NODE/chart-datatables-labels.js"></script>
+
+
+@*<script src="~/AngularJS/NODE/chart.min.js"></script>*@
+<script src="~/AngularJS/Scripts/Reports/chart.js"></script>
+<style>
+    .chartCon {
+        margin: 0 auto;
+    }
+</style>
+<section ng-app="App_chart" ng-controller="Ctrl_chart">
+    <div class="content-wrapper " style="width:100%;display:inline-block">
+
+        <div class="page-header">
+            <div class="page-header-content hideThis">
+                <div class="page-title">
+                    <h4>
+                        <i class="icon-arrow-left52 position-left"></i>
+                        <span class="text-semibold">Reports</span> - Purchased Charts
+                    </h4>
+                    <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                </div>
+                <div class="heading-elements">
+                    <div class="heading-btn-group">
+                        <a href="#" class="btn btn-link btn-float has-text" ng-click="printPage()" ng-show="hideWhenPrint"><i class="icon-printer text-primary"></i><span>Show Printable Data</span></a>
+                        <a href="#" class="btn btn-link btn-float has-text" ng-show="showPrintData" ng-click="GoBack()"><i class="icon-redo2 text-primary"></i> <span>Go Back</span></a>
+                        @*<a href="#" class="btn btn-link btn-float has-text"><i class="icon-calculator text-primary"></i> <span>Invoices</span></a>
+                            <a href="#" class="btn btn-link btn-float has-text"><i class="icon-calendar5 text-primary"></i> <span>Schedule</span></a>*@
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="panel panel-flat">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            Purchased Charts Overview
+                            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                        </h5>
+                        <div class="heading-elements">
+                            <ul class="icons-list">
+                                <li><a data-action="collapse"></a></li>
+                                <li><a data-action="reload"></a></li>
+                                <li><a data-action="close"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                                    <input type="text" class="form-control" name=" daterange" id="demo" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="text-center">Top Purchase Commodity</h3>
+                            <div class="chartCon">
+                                <canvas id="myChart" @*style="background-color: #75f786;"*@></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="text-center">Top 10 Beneficiary</h3>
+                            <div class="chartCon">
+                                <canvas id="horBar" width="400" height="400"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="hello">
+                            <h3 class="text-center">Top Beneficiary per Commodity</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

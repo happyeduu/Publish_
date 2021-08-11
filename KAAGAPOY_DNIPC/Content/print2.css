@@ -1,0 +1,25 @@
+﻿@media print{
+       
+    .hideThis{
+        display:none;
+    }
+    table,
+  td {
+    border-width: 1px;
+    border-style: solid;
+    border-collapse: collapse;
+    padding: 15px;
+    color: #000000;
+    text-align: center;
+  }
+  table.pos_fixed1 {
+    float: left;
+    top: 30px;
+    margin-left: 120px;
+  }
+  table.pos_fixed2 {
+    float: right;
+    top: 30px;
+    margin-right: 120px;
+  }
+}

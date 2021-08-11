@@ -1,0 +1,467 @@
+﻿@{
+    ViewBag.Title = "Spoilage";
+}
+<link href="~/Content/print.css" rel="stylesheet" />
+<script src="~/AngularJS/Scripts/Reports/bulksales.js"></script>
+<script src="~/AngularJS/NODE/inWords.js"></script>
+<style>
+    .paymentNature-row {
+        background-color: #18A689;
+        color: #FFFFFF;
+        margin: 1px;
+        font-size: xx-large;
+    }
+
+    .title-nature {
+        font-size: larger;
+        font-weight: bold;
+    }
+
+    .select-editable {
+        position: relative;
+        display: inline-block;
+    }
+
+    .sub_r-content {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: x-large;
+    }
+
+    li {
+        cursor: auto;
+    }
+        /*li:hover{
+
+        background-color:cornflowerblue !important;
+
+    }*/
+        li:active {
+            /*color:white !important;*/
+        }
+    /*div{
+        border:1px solid black;
+    }*/
+    .ibox-content {
+        padding-bottom: 5px;
+    }
+
+    .no-pad {
+        padding: 0;
+        margin-left: -17px;
+        margin-right: 0;
+    }
+
+    .orBox {
+        margin-left: 30px;
+    }
+
+    .dr-div:hover {
+        background-color: #4EB8D4;
+        color: white;
+    }
+
+    .bgbutton {
+        background-color: #4EB8D4;
+        color: white;
+        font-weight: bolder;
+    }
+
+    .page {
+        width: 8.5in;
+        min-height: 25cm;
+        margin-left: 150px;
+        box-shadow: 1px 1px 2px 2px;
+        background-color: white;
+    }
+
+
+
+    .content-container {
+        font-family: Arial;
+        margin: 0.5in 0.5in .5in 0.5in;
+    }
+
+    .heading {
+        text-align: center;
+        font-size: 19px;
+        color: black;
+        font-weight: bold;
+    }
+
+    .head-address {
+        color: black;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .title-row {
+        margin-bottom: 30px;
+        margin-top: 30px;
+    }
+
+    .content-text {
+        color: black;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .content-text-value {
+        color: black;
+        font-size: 15px;
+        font-weight: 500;
+        margin-left: 0;
+    }
+
+    .content-text-value2 {
+        color: black;
+        font-size: 15px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .box {
+        width: 30px;
+        height: 20px;
+        border: 2px solid black;
+    }
+
+    .table-data {
+        border: 2px solid black;
+        width: 100%;
+    }
+
+    .cell-text {
+        text-align: center;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        border: 1px solid black;
+        color: black;
+    }
+
+    .row {
+        color: black;
+    }
+
+    signatory-title {
+        color: black;
+        font-size: small;
+        font-weight: 600;
+    }
+
+    .top-space {
+        margin-top: 40px;
+    }
+
+
+
+    select:required:invalid {
+        color: gray;
+    }
+
+    option[value=""][disabled] {
+        display: none;
+    }
+
+    .indent-td {
+        margin-left: 30px;
+    }
+
+    option {
+        color: black;
+    }
+
+    .panel {
+        border-style: none;
+    }
+</style>
+<section ng-app="App_bulkSales" ng-controller="Ctrl_bulkSales">
+    <div class="content-wrapper hideThis" style="width:100%;display:inline-block">
+
+        <div class="page-header">
+            <div class="page-header-content hideThis">
+                <div class="page-title">
+                    <h4>
+                        <i class="icon-arrow-left52 position-left"></i>
+                        <span class="text-semibold">Reports</span> - Bulk Sales
+                    </h4>
+                    <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                </div>
+                <div class="heading-elements">
+                    <div class="heading-btn-group">
+                        <a href="#" class="btn btn-link btn-float has-text" ng-click="printPage()" ng-show="hideWhenPrint"><i class="icon-printer text-primary"></i><span>Show Printable Data</span></a>
+                        <a href="#" class="btn btn-link btn-float has-text" ng-show="showPrintData" ng-click="GoBack()"><i class="icon-redo2 text-primary"></i> <span>Go Back</span></a>
+                        @*<a href="#" class="btn btn-link btn-float has-text"><i class="icon-calculator text-primary"></i> <span>Invoices</span></a>
+                            <a href="#" class="btn btn-link btn-float has-text"><i class="icon-calendar5 text-primary"></i> <span>Schedule</span></a>*@
+                    </div>
+                </div>
+            </div>
+            <div class="content" ng-show="hideWhenPrint">
+                <div class="panel panel-flat">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            Basic responsive table
+                            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                        </h5>
+                        <div class="heading-elements">
+                            <ul class="icons-list">
+                                <li><a data-action="collapse"></a></li>
+                                <li><a data-action="reload"></a></li>
+                                <li><a data-action="close"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                                    <input type="date" ng-model="searchD" ng-change="changeDate(searchD)" class="form-control daterange-single" value="03/18/2013">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Product Name</th>
+                                    <th>Class Type</th>
+                                    <th>QTY</th>
+                                    <th>Resiko</th>
+                                    <th>In KG/Pack</th>
+                                    <th></th>
+                                    <th>Price</th>
+                                    <th></th>
+                                    <th>Total Price</th>
+                                    @*<th>Total Kilogram/Pcs</th>*@
+                                </tr>
+                            </thead>
+                           
+                            <tbody ng-repeat="d in ledgerDetails">
+                              
+                                <tr>
+                                    <th rowspan="{{d.displayLed[0].summariesReport.length + 1}}" scope="rowgroup">{{d.dateToday | date:'fullDate'}}</th>
+                                </tr>
+                                <tr ng-repeat="v in d.displayLed[0].summariesReport | orderBy:'productName'">
+                                    <td>{{v.productName}}</td>
+                                    <td>{{v.classType}}</td>
+                                    @*{{v.qty}} ({{v.producePacksInKG[0]}} {{v.unit[0]}})*@
+                                    <td><b style="color:#05f50d">{{v.producePacksInKG[0][0] == null ?  (v.qty+ v.resikoKG) +' kg': (v.qty- v.resikoKG) +'('+ v.producePacksInKG[0][0]+ ' ' + v.unit[0][0] +')' }} </b></td>
+                                    <td>{{v.resikoKG}} kg</td>
+                                    <td>{{v.producePacksInKG[0][0] == null ?  v.qty +' kg': (v.qty * v.producePacksInKG[0][0] | currency :"":2) +' '+ v.unit[0][0]}}</td>
+                                    <td>x</td>
+                                    <td>{{v.pricePerKG == null ? (v.price | currency :"₱":2) : (v.pricePerKG | currency :"₱":2)}}</td>
+                                    <td>=</td>
+                                    <td>{{v.pricePerKG == null ? (v.price * (v.qty) | currency :"₱":2) : (v.pricePerKG * (v.qty) | currency :"₱":2)}}</td>
+                                    @*<td>{{v.sumOfKilos == null ? v.qty +' Pcs' : v.sumOfKilos +' KG'}}</td>*@
+                                </tr>
+                             
+                            </tbody>
+                            <div class="text-center" ng-show="ledgerDetails.length == 0">
+                                <h3 class="text-danger-400">No Data Today</h3>
+                            </div>
+                            <tfoot style="vertical-align:middle">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Resiko: {{resikaSum  + ' kg'}}</td>
+                                    <td>Purchases: {{resultOfSum  + ' kg' }}</td>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td style="width:40px"> </td>
+                                    <td>Grand Total: {{computeAmount | currency :"₱":2}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*<div >="content" ng-show="hideWhenPrint">
+        <div class="panel panel-flat">*@
+    <div id="printPage" class="page ibox float-e-margins" ng-show="showPrintData">
+        <div class="row content-wrapper panel">
+            <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 hideThis" style="text-align:center;margin-top:30px">
+                <button onclick="window.print(); return false;" class="btn btn-primary style=" type="button">
+                    <i class="fa fa-print "></i>&nbsp;Print Preview
+                </button>
+            </div>
+            <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12">
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-sm-12 heading top-space text-center">PROVINCE OF DAVAO DEL NORTE</div>
+                    <div class="col-sm-12 heading text-center">DAVAO DEL NORTE INVESTMENT AND PROMOTION CENTER</div>
+                    <div class="col-sm-12 head-address text-center">Mankilam, Tagum City</div>
+                </div>
+                <div class="row title-row">
+                    <div class="col-sm-12 heading">TRANSACTION DETAILS</div>
+                </div>
+                <div class="row " style="margin-top:30px;">
+                    <div class="col-sm-9 col-lg-9 col-md-9 col-xs-9 content-text">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4" style="margin-top:-50px;margin-left:-35px">
+                            <p class=" text-muted text-center"><svg id="barcodeNature"></svg></p>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 col-lg-1 col-md-1 col-xs-1 content-text">DATE</div>
+                    <div class="col-sm-2 col-lg-2 col-md-2 col-xs-2 content-text-value">{{dateNow | date:'MM-dd-yyyy'}}</div>
+                </div>
+                @*<div class="row">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 content-text">TO</div>
+                        <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6 content-text-value">PTO</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 content-text">FROM</div>
+                        <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6 content-text-value">PENRO-LGU</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 content-text">PLEASE COLLECT FROM</div>
+                        <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6 content-text-value">
+                            <b><u>{{permitteeName}}</u></b>
+                        </div>
+                    </div>*@
+                @*<div class="row">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 content-text">ADDRESS</div>
+                        <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6 content-text-value">{{permitteeAddress}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 content-text">QUARRY ADDRESS</div>
+                        <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6 content-text-value">{{quarryArea}}</div>
+                    </div>*@
+                <div class="row" style="margin-top:16px;">
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text" style="text-align:center"><b>BULK SALES REPORT</b></div>
+                </div>
+                <div class="row">
+                    <hr style="border:2px solid black;" />
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text">
+                        @*{{nature}} - {{description}}*@
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Product Name</th>
+                                    <th>Class Type</th>
+                                    <th>QTY</th>
+                                    <th>Resiko</th>
+                                    <th>In KG/Pack</th>
+                                    <th></th>
+                                    <th>Price</th>
+                                    <th></th>
+                                    <th>Total Price</th>
+                                    @*<th>Total Kilogram/Pcs</th>*@
+                                </tr>
+                            </thead>
+
+                            <tbody ng-repeat="d in ledgerDetails">
+
+                                <tr>
+                                    <th rowspan="{{d.displayLed[0].summariesReport.length + 1}}" scope="rowgroup">{{d.dateToday | date:'fullDate'}}</th>
+                                </tr>
+                                <tr ng-repeat="v in d.displayLed[0].summariesReport | orderBy:'productName'">
+                                    <td>{{v.productName}}</td>
+                                    <td>{{v.classType}}</td>
+                                    @*{{v.qty}} ({{v.producePacksInKG[0]}} {{v.unit[0]}})*@
+                                    <td><b style="color:#05f50d">{{v.producePacksInKG[0][0] == null ?  (v.qty+ v.resikoKG) +' kg': (v.qty- v.resikoKG) +'('+ v.producePacksInKG[0][0]+ ' ' + v.unit[0][0] +')' }} </b></td>
+                                    <td>{{v.resikoKG}} kg</td>
+                                    <td>{{v.producePacksInKG[0][0] == null ?  v.qty +' kg': (v.qty * v.producePacksInKG[0][0] | currency :"":2) +' '+ v.unit[0][0]}}</td>
+                                    <td>x</td>
+                                    <td>{{v.pricePerKG == null ? (v.price | currency :"₱":2) : (v.pricePerKG | currency :"₱":2)}}</td>
+                                    <td>=</td>
+                                    <td>{{v.pricePerKG == null ? (v.price * (v.qty) | currency :"₱":2) : (v.pricePerKG * (v.qty) | currency :"₱":2)}}</td>
+                                    @*<td>{{v.sumOfKilos == null ? v.qty +' Pcs' : v.sumOfKilos +' KG'}}</td>*@
+                                </tr>
+
+                            </tbody>
+                            <div class="text-center" ng-show="ledgerDetails.length == 0">
+                                <h3 class="text-danger-400">No Data Today</h3>
+                            </div>
+                            <tfoot style="vertical-align:middle">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                    <td>Resiko: {{resikaSum  + ' kg'}}</td>
+                                    <td>Purchases: {{resultOfSum  + ' kg' }}</td>
+                                    
+                                    <td></td>
+                                    <td></td>
+                                    <td style="width:40px"> </td>
+                                    <td>Grand Total: {{computeAmount | currency :"₱":2}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    @*<div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text" ng-repeat="data in feeTypeToPrint">
+                            <div class="col-sm-9 col-lg-9 col-md-9 col-xs-9">{{data.feeName}}</div>
+                            <div class="col-sm-2 col-lg-2 col-md-2 col-xs-2" ng-if="data.feeName == 'Advance extraction' ">{{data.feeAmount - amountPaidPer | currency : "":"2"}}</div>
+                            <div class="col-sm-2 col-lg-2 col-md-2 col-xs-2" ng-if="data.feeName != 'Advance extraction' ">{{data.feeAmount | currency : "":"2"}}</div>
+                        </div>
+                        <div ng-show="amountPaidPer != 0" class=" col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text" style="margin-top:10px">
+                            <div class="col-sm-9 col-lg-9 col-md-9 col-xs-9">Pay in/Deposit</div>
+                            <div class="col-sm-2 col-lg-2 col-md-2 col-xs-2">{{amountPaidPer | currency : "":"2"}}</div>
+                        </div>
+                        <div ng-show="amountPaidPer != 0" class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text" style="margin-top:10px">
+                            <div class="col-sm-9 col-lg-9 col-md-9 col-xs-9"><b>TOTAL</b></div>
+                            <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3"><b>{{total - AEfee  | currency:"₱ ":"2"}}</b></div>
+                        </div>
+                        <div ng-show="amountPaidPer == 0" class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text" style="margin-top:10px">
+                            <div class="col-sm-9 col-lg-9 col-md-9 col-xs-9"><b>TOTAL</b></div>
+                            <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3"><b>{{total  | currency:"₱ ":"2"}}</b></div>
+                        </div>*@
+                </div>
+                <div class="row">
+                    <hr style="border:2px solid black;" />
+                </div>
+                <div class="row">
+                    @*<div class="col-sm-12">
+                        <b>AMOUNT IN WORDS:</b>
+                        <span style="margin-left:20px;">{{ledgerDetails[0].grandTotal | words | uppercase}}&nbsp;PESOS.</span>
+                    </div>*@
+
+                </div>
+                @*<div class="row" style="margin-top:20px;">
+
+                        <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text-value">
+                            <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6"></div>
+                            <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6">Collected by: _______________________</div>
+                            <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6"></div>
+                            <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6">O.R. No.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: _______________________</div>
+                            <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6"></div>
+                            <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: _______________________</div>
+                        </div>
+                    </div>*@
+                @*<div class="row" style="margin-top:16px;">
+                        <div class="col-sm-6 col-lg-6 col-md-6 col-xs-6 signatory-title">ENDORSED BY:</div>
+
+                    </div>*@
+                <div class="row" style="margin-top:32px;">
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><b>@Session["Uname"]</b></div>
+                    @*<div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><b>NAME</b></div>
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><b>NAME</b></div>*@
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>Prepared By</small></div>
+                    @*<div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>POSITIONsss</small></div>
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>POSITION</small></div>*@
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+

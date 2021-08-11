@@ -1,0 +1,291 @@
+﻿
+@{
+    ViewBag.Title = "InvetoryEnd";
+}
+<script src="~/AngularJS/Scripts/Reports/invetoryEnd.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<link href="~/Content/print.css" rel="stylesheet" />
+<link href="~/Content/print_design.css" rel="stylesheet" />
+<script src="~/AngularJS/NODE/lodash.js"></script>
+<section ng-app="App_inventoryEnd" ng-controller="Ctrl_inventoryEnd">
+    <div class="panel panel-flat hideThis" ng-show="hideWhenPrint">
+        <div class="panel-heading">
+            <h5 class="panel-title"><a class="heading-elements-toggle"><i class="icon-more"></i></a></h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    @*<span class="input-group-addon"><i class="icon-calendar22"></i></span>*@
+                    <div class="form-group has-feedback has-feedback-left">
+                        <select required id="selectMonth" style="width:100%;" ng-change="monthChange(monthNum)" class="form-control" ng-model="monthNum">
+                            <option value="">Select Month</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+
+                        </select>
+                    </div>
+                    <div class="form-control-feedback">
+                        <i class="icon-calendar22"></i>
+                    </div>
+                </div>
+                <div class="col-md-1" style="margin-left:-10px">
+                    <button class="btn" ng-click="removeDate()">X</button>
+                </div>
+                @*<div class="col-md-4" style="margin-left:-50px">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon-search4"></i></span>
+                            <input type="text" placeholder="Search..." ng-model="search" class="form-control ng-pristine ng-untouched ng-valid ng-empty">
+                        </div>
+                    </div>*@
+                <div class="col-md-2">
+                    <button type="submit" class="btn bg-gray-light btn-block" ng-click="print()">Print Preview</button>
+                </div>
+                @*<div class="col-md-2" ng-hide="detailedReportShow">
+                    <button type="submit" class="btn bg-green-700 btn-block" ng-click="cmdDetailedReport()">View Detailed Report</button>
+                </div>*@
+                <div class="col-md-2" ng-hide="monthlyReportShow">
+                    <button type="submit" class="btn bg-green-700 btn-block" ng-click="cmdMonthlyReport()">View Monthly Report</button>
+                </div>
+            </div>
+            <br>
+        </div>
+
+        <div class="table-responsive" ng-show="monthlyReportShow">
+            <h3 class="text-center">{{monthNum == null ? inventoryEnd[0].Month - 1:monthNum -1 | monthname}}</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Remaining KG(s)</th>
+                        <th>Resiko</th>
+                        <th>Purchases</th>
+                        <th>Spoilages</th>
+                        <th>Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="i in inventoryEnd">
+                        <td>{{i.productName | uppercase}}</td>
+                        <td>{{i.stocks}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                        <td>{{i.resiko}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                        <td>{{i.SumOfKilos}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                        <td>{{i.spoilageKG == null ? 0 : i.spoilageKG}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                        <td>{{i.totalPricerPerProd | currency :"₱":2}}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+
+                        <td></td>
+                        <td></td>
+                        <td>Total Resiko: {{sumResiko}} KG</td>
+                        <td class="text-size-large "> Total Kilos: {{sumOfAllKilos}} KG</td>
+                        <td>Spoilage: {{spoilageTotal}} KG</td>
+
+                        <td class="text-size-large ">Grand Total: {{grandTotal | currency :"₱":2}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="table-striped" ng-show="detailedReportShow">
+            <h3 class="text-center">{{monthNum == null ? inventoryEnd[0].Month - 1:monthNum -1 | monthname}}</h3>  
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>QTY</th>
+                        <th>In KG/Pack</th>
+                        <th>Price</th>
+                        <th>Total Price</th>
+                        <th>@*Total Kilogram/Pcs*@</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="d in detailedReport">
+                    <tr ng-repeat="v in d.displayLed[0].summariesReport">
+                        <td>{{v.productName}}</td>
+                        @*{{v.qty}} ({{v.producePacksInKG[0]}} {{v.unit[0]}})*@
+                        <td><b style="color:#05f50d">{{v.producePacksInKG[0][0] == null ?  v.qty +' kg': v.qty +'('+ v.producePacksInKG[0][0]+ ' ' + v.unit[0][0] +')' }} </b></td>
+                        <td>{{v.producePacksInKG[0][0] == null ?  v.qty +' kg': (v.qty * v.producePacksInKG[0][0] | currency :"":2) +' '+ v.unit[0][0]}}</td>
+                        <td>{{v.pricePerKG == null ? (v.price | currency :"₱":2) : (v.pricePerKG | currency :"₱":2)}}</td>
+                        <td>{{v.pricePerKG == null ? (v.price * v.qty | currency :"₱":2) : (v.pricePerKG * v.qty | currency :"₱":2)}}</td>
+                        @*<td>{{v.sumOfKilos == null ? v.qty +' Pcs' : v.sumOfKilos +' KG'}}</td>*@
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-size-large text-right">Grand Total:</td>
+                        <td class="text-size-large underlined"> {{detailedReport[0].grandTotal | currency :"₱":2}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div id="printPage" class="page ibox float-e-margins" ng-show="showPrintData">
+        <div class="row content-wrapper panel">
+            <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12">
+                <button class="btn bg-gray-light hideThis" ng-click="back()"> Back </button>
+                <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 hideThis" style="text-align:center;margin-top:30px">
+                    <button onclick="window.print(); return false;" class="btn btn-primary style=" type="button">
+                        <i class="fa fa-print "></i>&nbsp;Print
+                    </button>
+                </div>
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-sm-12 heading top-space text-center">PROVINCE OF DAVAO DEL NORTE</div>
+                    <div class="col-sm-12 heading text-center">DAVAO DEL NORTE INVESTMENT AND PROMOTION CENTER</div>
+                    <div class="col-sm-12 head-address text-center">Mankilam, Tagum City</div>
+                </div>
+                <div class="row title-row">
+                    <div class="col-sm-12 heading">INVENTORY DETAILS</div>
+                </div>
+                <div class="row " style="margin-top:30px;">
+                    <div class="col-sm-9 col-lg-9 col-md-9 col-xs-9 content-text">
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4" style="margin-top:-50px;margin-left:-35px">
+                            <p class=" text-muted text-center"><svg id="barcodeNature"></svg></p>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 col-lg-1 col-md-1 col-xs-1 content-text"></div>
+                </div>
+                <div class="row" style="margin-top:16px;">
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text-value" style="text-align:center">{{monthNum == null ? inventoryEnd[0].Month - 1:monthNum -1 | monthname}}</div>
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text" style="text-align:center"><b>SUMARY REPORT</b></div>
+                </div>
+                <div class="row">
+                    <hr style="border:2px solid black;" />
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 content-text">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px">
+                    <div class="table-responsive" ng-show="monthlyReportShow">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Remaining KG(s)</th>
+                                    <th>Resiko</th>
+                                    <th>Purchases</th>
+                                    <th>Spoilages</th>
+                                    <th>Total Sales</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="i in inventoryEnd">
+                                    <td>{{i.productName | uppercase}}</td>
+                                    <td>{{i.stocks}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                                    <td>{{i.resiko}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                                    <td>{{i.SumOfKilos}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                                    <td>{{i.spoilageKG == null ? 0 : i.spoilageKG}} {{i.categoryID == 1 ? 'PCS':'KG'}}</td>
+                                    <td>{{i.totalPricerPerProd | currency :"₱":2}}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total Resiko: {{sumResiko}} KG</td>
+                                    <td class="text-size-large "> Total Kilos: {{sumOfAllKilos}} KG</td>
+                                    <td>Spoilage: {{spoilageTotal}} KG</td>
+
+                                    <td class="text-size-large ">Grand Total: {{grandTotal | currency :"₱":2}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="table-striped" ng-show="detailedReportShow">
+                        <h3 class="text-center">{{MonthName | monthname}}</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>QTY</th>
+                                    <th>In KG/Pack</th>
+                                    <th>Price</th>
+                                    <th>Total Price</th>
+                                    <th>@*Total Kilogram/Pcs*@</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="d in detailedReport">
+                                <tr ng-repeat="v in d.displayLed[0].summariesReport">
+                                    <td>{{v.productName}}</td>
+                                    @*{{v.qty}} ({{v.producePacksInKG[0]}} {{v.unit[0]}})*@
+                                    <td><b style="color:#05f50d">{{v.producePacksInKG[0][0] == null ?  v.qty +' kg': v.qty +'('+ v.producePacksInKG[0][0]+ ' ' + v.unit[0][0] +')' }} </b></td>
+                                    <td>{{v.producePacksInKG[0][0] == null ?  v.qty +' kg': (v.qty * v.producePacksInKG[0][0] | currency :"":2) +' '+ v.unit[0][0]}}</td>
+                                    <td>{{v.pricePerKG == null ? (v.price | currency :"₱":2) : (v.pricePerKG | currency :"₱":2)}}</td>
+                                    <td>{{v.pricePerKG == null ? (v.price * v.qty | currency :"₱":2) : (v.pricePerKG * v.qty | currency :"₱":2)}}</td>
+                                    @*<td>{{v.sumOfKilos == null ? v.qty +' Pcs' : v.sumOfKilos +' KG'}}</td>*@
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-size-large text-right">Grand Total:</td>
+                                    <td class="text-size-large underlined"> {{detailedReport[0].grandTotal | currency :"₱":2}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr style="border:2px solid black;" />
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        @*<b>AMOUNT IN WORDS:</b>*@
+                        @*<span style="margin-left:20px;">{{ledgerDetails[0].grandTotal | words | uppercase}}&nbsp;PESOS.</span>*@
+                    </div>
+
+                </div>
+
+                <div class="row" style="margin-top:32px;">
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><b>@Session["Uname"]</b></div>
+                    @*<div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><b>NAME</b></div>
+                        <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><b>NAME</b></div>*@
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>Prepared By</small></div>
+                    @*<div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>POSITIONsss</small></div>
+                    <div class="col-sm-4 col-lg-4 col-md-4 col-xs-4 signatory-title"><small>POSITION</small></div>*@
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    $(function () {
+        $("#selectMonth").select2({
+            placeholder: 'Select a Month',
+            allowClear: true
+        });
+    });
+</script>
+

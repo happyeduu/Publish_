@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="25ad7441dd784c4e9fa1ab730fe7ec6f" Name="Diagram1">
+        <EntityTypeShape EntityType="POSModel.category" Width="1.5" PointX="0.75" PointY="4.875" />
+        <EntityTypeShape EntityType="POSModel.inventroyLog" Width="1.5" PointX="8.25" PointY="7.125" />
+        <EntityTypeShape EntityType="POSModel.ledger" Width="1.5" PointX="3" PointY="16" />
+        <EntityTypeShape EntityType="POSModel.ledgerDetail" Width="1.5" PointX="5.25" PointY="2.625" />
+        <EntityTypeShape EntityType="POSModel.NonVerifiedBeneficiary" Width="1.5" PointX="12.25" PointY="8.375" />
+        <EntityTypeShape EntityType="POSModel.priceHistory" Width="1.5" PointX="3" PointY="4" />
+        <EntityTypeShape EntityType="POSModel.producer" Width="1.5" PointX="0.75" PointY="8" />
+        <EntityTypeShape EntityType="POSModel.ProductPrice" Width="1.5" PointX="5.25" PointY="8.25" />
+        <EntityTypeShape EntityType="POSModel.product" Width="1.5" PointX="3" PointY="7.5" />
+        <EntityTypeShape EntityType="POSModel.spoilageImage" Width="1.5" PointX="5.25" PointY="23.125" />
+        <EntityTypeShape EntityType="POSModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="POSModel.transactionStatu" Width="1.5" PointX="3" PointY="13.25" />
+        <EntityTypeShape EntityType="POSModel.trefBrgy" Width="1.5" PointX="10" PointY="1" />
+        <EntityTypeShape EntityType="POSModel.trefCityMun" Width="1.5" PointX="7.75" PointY="1.125" />
+        <EntityTypeShape EntityType="POSModel.user" Width="1.5" PointX="0.75" PointY="15.875" />
+        <AssociationConnector Association="POSModel.FK_products_category_list" />
+        <AssociationConnector Association="POSModel.FK_inventroyLogs_priceHistory" />
+        <AssociationConnector Association="POSModel.FK_inventroyLogs_products" />
+        <AssociationConnector Association="POSModel.FK_inventroyLogs_transactionStatus" />
+        <AssociationConnector Association="POSModel.FK_inventroyLogs_user" />
+        <AssociationConnector Association="POSModel.FK_ledger_user" />
+        <AssociationConnector Association="POSModel.FK_ledgerDetails_ledger" />
+        <AssociationConnector Association="POSModel.FK_ledgerDetails_priceHistory1" />
+        <AssociationConnector Association="POSModel.FK_ledgerDetails_products" />
+        <AssociationConnector Association="POSModel.FK_ledgerDetails_transactionStatus" />
+        <AssociationConnector Association="POSModel.FK_NonVerifiedBeneficiary_trefBrgy" />
+        <AssociationConnector Association="POSModel.FK_NonVerifiedBeneficiary_user" />
+        <AssociationConnector Association="POSModel.FK_ProductPrices_priceHistory" />
+        <AssociationConnector Association="POSModel.FK_products_producers" />
+        <AssociationConnector Association="POSModel.FK_ProductPrices_products" />
+        <AssociationConnector Association="POSModel.FK_spoilageImages_products" />
+        <AssociationConnector Association="POSModel.FK_trefBrgy_trefCityMun" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

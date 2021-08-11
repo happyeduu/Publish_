@@ -1,0 +1,170 @@
+﻿<style>
+    .paymentNature-row {
+        background-color: #18A689;
+        color: #FFFFFF;
+        margin: 1px;
+        font-size: xx-large;
+    }
+
+    .title-nature {
+        font-size: larger;
+        font-weight: bold;
+    }
+
+    .select-editable {
+        position: relative;
+        display: inline-block;
+    }
+
+    .sub_r-content {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: x-large;
+    }
+
+    li {
+        cursor: auto;
+    }
+        /*li:hover{
+
+        background-color:cornflowerblue !important;
+
+    }*/
+        li:active {
+            /*color:white !important;*/
+        }
+    /*div{
+        border:1px solid black;
+    }*/
+    .ibox-content {
+        padding-bottom: 5px;
+    }
+
+    .no-pad {
+        padding: 0;
+        margin-left: -17px;
+        margin-right: 0;
+    }
+
+    .orBox {
+        margin-left: 30px;
+    }
+
+    .dr-div:hover {
+        background-color: #4EB8D4;
+        color: white;
+    }
+
+    .bgbutton {
+        background-color: #4EB8D4;
+        color: white;
+        font-weight: bolder;
+    }
+
+    .page {
+        width: 10in;
+        min-height: 25cm;
+        margin-left: 150px;
+        box-shadow: 1px 1px 2px 2px;
+        background-color: white;
+    }
+
+
+
+    .content-container {
+        font-family: Arial;
+        margin: 0.5in 0.5in .5in 0.5in;
+    }
+
+    .heading {
+        text-align: center;
+        font-size: 19px;
+        color: black;
+        font-weight: bold;
+    }
+
+    .head-address {
+        color: black;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .title-row {
+        margin-bottom: 30px;
+        margin-top: 30px;
+    }
+
+    .content-text {
+        color: black;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .content-text-value {
+        color: black;
+        font-size: 15px;
+        font-weight: 500;
+        margin-left: 0;
+    }
+
+    .content-text-value2 {
+        color: black;
+        font-size: 15px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .box {
+        width: 30px;
+        height: 20px;
+        border: 2px solid black;
+    }
+
+    .table-data {
+        border: 2px solid black;
+        width: 100%;
+    }
+
+    .cell-text {
+        text-align: center;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        border: 1px solid black;
+        color: black;
+    }
+
+    .row {
+        color: black;
+    }
+
+    signatory-title {
+        color: black;
+        font-size: small;
+        font-weight: 600;
+    }
+
+    .top-space {
+        margin-top: 40px;
+    }
+
+
+
+    select:required:invalid {
+        color: gray;
+    }
+
+    option[value=""][disabled] {
+        display: none;
+    }
+
+    .indent-td {
+        margin-left: 30px;
+    }
+
+    option {
+        color: black;
+    }
+    .panel {
+        border-style: none;
+    }
+</style>

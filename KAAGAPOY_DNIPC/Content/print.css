@@ -1,0 +1,107 @@
+﻿@media print{
+   
+    .hideThis{
+        display:none;
+    }
+    .top-space{
+        margin-top:1px !important;
+    }
+    nav{
+        display:none !important;
+    }
+       body {
+      margin-left:-100px;
+    }
+     .page {
+        /*width:8.5in;*/
+        min-height: 10cm !important;
+        /*margin-left: !important;*/
+    
+
+    }
+   
+      .content-text {
+            color: black;
+            font-size: x-small;
+            font-weight: 600;
+         
+        }
+
+        .content-container {
+           width:7.4in !important;
+            margin-left:0 !important;
+            margin-top:-8px !important;
+            font-family: Arial;
+        }
+
+        .heading {
+            text-align: center;
+            font-size: small;
+            color: black;
+            font-weight: bold;
+        }
+
+        .head-address {
+            color: black;
+            text-align: center;
+            font-size: small;
+        }
+
+        .title-row {
+            margin-bottom: 30px;
+            margin-top: 30px;
+        }
+
+        .content-text-value {
+            color: black;
+            font-size: x-small;
+            font-weight: 600;        
+            margin-left:0;
+        }
+
+        .content-text-value2 {
+            color: black;
+            font-size: x-small;
+            font-weight: 600;        
+            display: inline-block;
+        }
+
+        .box {
+            width: 30px;
+            height: 20px;
+            border: 2px solid black;
+           
+        }
+
+        .table-data {
+            border: 2px solid black;
+            width: 100%;
+        }
+
+        .cell-text {
+            text-align: center;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            border: 1px solid black;
+            color: black;
+        }
+
+        .row {
+            color: black;
+        }
+        .modal{
+            padding:0 0 0 0 !important;
+        }
+         .modal-dialog{
+            padding:0 0 0 0 !important;
+        }
+        .infoContent{
+
+            margin-left:100px;
+
+        }
+        div{
+           
+         
+        }
+}

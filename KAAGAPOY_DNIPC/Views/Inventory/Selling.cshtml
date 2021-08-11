@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "Selling";
+}
+<script src="~/AngularJS/NODE/select2.js"></script>
+<link href="~/Interface/sweetalert.css" rel="stylesheet" />
+<script src="~/AngularJS/Scripts/Inventory/selling.js"></script>
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="page-title">
+            <h4>
+                <i class="icon-arrow-left52 position-left"></i>
+                <span class="text-semibold">Bulk Selling</span>
+            </h4>
+            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+        </div>
+
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-component">
+        <a class="breadcrumb-elements-toggle"><i class="icon-menu-open"></i></a>
+        <ul class="breadcrumb">
+            <li>
+                <a href="/test/"><i class="icon-home2 position-left"></i> Home</a>
+            </li>
+            <li class="active">Bulk Selling</li>
+        </ul>
+    </div>
+</div>
+<div class="content" ng-app="app_selling" ng-controller="Ctrl_selling">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <form ng-submit="addResiko()">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div class="form-group has-feedback has-feedback-left">
+                                                <select id="selectCom" class="form-control" ng-change="getCommodity(f)" ng-model="f.productID">
+                                                    <option value=""></option>
+                                                    <option ng-repeat="item in vegeList | orderBy:'productName'" value="{{item.productID}}">{{item.productName}} ({{item.unit}})</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <select class="form-control" ng-model="f.classType">
+                                                    <option value="" selected>Select Class</option>
+                                                    <option value="A">Class A</option>
+                                                    <option value="B">Class B</option>
+                                                    <option value="Bundle">Bundle</option>
+                                                    <option value="Sack">Sack</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <label class="label label-success" style="font-size:14px"> Stocks: {{stockOfCom}} {{unitOfCom}}</label>
+                                    @*<div class="form-control-feedback">
+                                            <i class="icon-hash text-muted"></i>
+                                        </div>*@
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <input required type="number" step="any" placeholder="Please Enter how many KG" class="form-control" ng-model="f.txtKGresiko" />
+                                        <div class="form-control-feedback">
+                                            <i class="icon-hash text-muted"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <input required type="number" step="any" placeholder="Difference/Resiko" class="form-control" ng-model="f.txtResiko" />
+                                        <div class="form-control-feedback">
+                                            <i class="icon-hash text-muted"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <input required type="number" placeholder="Price..." class="form-control" ng-model="f.txtAmount" />
+                                        <div class="form-control-feedback">
+                                            <i class="icon-price-tag text-muted"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <b>Amount : ₱{{f.txtKGresiko * f.txtAmount}}</b>
+                                    </div>
+                                    @*<div class="form-group has-feedback has-feedback-left">
+                                            <input placeholder="Description if any" class="form-control" ng-model="f.txtDescriptionresika" />
+                                            <div class="form-control-feedback">
+                                                <i class="icon-design text-muted"></i>
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group has-feedback has-feedback-left">
+                                        <input required type="date" class="form-control" ng-model="f.txtDateResika" placeholder="Date..." />
+                                        <div class="form-control-feedback">
+                                            <i class="icon-calendar text-muted"></i>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <button type="submit" ng-disabled="stockOfCom <= 0 || f.txtKGresiko + f.txtResiko > stockOfCom" class="btn btn-primary col-sm-12 pull-right"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="row">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="bg-blue">
+                                        <th>Product Name</th>
+                                        <th>Class Type</th>
+                                        <th>Amount</th>
+                                        <th>Kilograms</th>
+                                        <th>Difference/Resiko</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="per in List_bulkResiko">
+                                        <td>{{per.productName}}</td>
+                                        <td>{{per.classType}}</td>
+                                        <td>{{per.txtAmount}}</td>
+                                        <td>{{per.txtKGresiko}} kg</td>
+                                        <td>{{per.txtResiko}} kg</td>
+                                        <td>{{per.txtDateResika | date:'longDate'}}</td>
+                                        <td>{{per.txtKGresiko * per.txtAmount | currency :"₱":2}} </td>
+                                        <td>
+                                            <button ng-click="removeItem($index,per)" class="btn btn-info btn-circle" type="button" value="per.isReported"><i class="fa fa-times"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-right"><b>Grand Total:</b></td>
+                                        <td style="font-size:12px"><b>{{totalPrice_resiko | currency :"₱":2}}</b></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div>
+                        <button ng-disabled="saveDis" class="btn btn-primary col-sm-3 pull-right demo2" type="button" ng-click="bulkSelling()"><i class="fa fa-check"></i>&nbsp;Save</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#selectCom").select2({
+        placeholder: 'Select a Commodity',
+        allowClear: true,
+        tags: true
+    });
+</script>

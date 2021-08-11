@@ -1,0 +1,319 @@
+﻿@{
+    ViewBag.Title = "AddStocks";
+}
+<script src="~/AngularJS/Scripts/Inventory/AddStock.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<link href="~/Interface/sweetalert.css" rel="stylesheet" />
+<script src="~/AngularJS/API_url.js"></script>
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="page-title">
+            <h4>
+                <i class="icon-arrow-left52 position-left"></i>
+                <span class="text-semibold">Add Stocks</span>
+            </h4>
+            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+        </div>
+     
+    </div>
+
+    <div class="breadcrumb-line breadcrumb-line-component">
+        <a class="breadcrumb-elements-toggle"><i class="icon-menu-open"></i></a>
+        <ul class="breadcrumb">
+            <li>
+                <a href="/test/"><i class="icon-home2 position-left"></i> Home</a>
+            </li>
+            <li class="active">Add Stocks</li>
+        </ul>
+    </div>
+</div>
+<div class="content" ng-app="app_addStock" ng-controller="Ctrl_addStock">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="form-group">
+                                <div class="row" ng-hide="isPasalubong">
+                                    <div class="col-md-8">
+                                        <div class="form-group has-feedback has-feedback-left">
+                                            <input ng-disabled="isPasalubong" required placeholder="Search beneficiary" class="form-control" ng-model="txtSearch" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button ng-disabled="isPasalubong" type="button" class="btn btn-info form-control" ng-click="SearhWhoProdcer(txtSearch,isKaagapay,isPointSystem)">Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br ng-hide="isPasalubong">
+                                <table class="table table-striped" ng-hide="nothingToShowSearch">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Producer Name
+                                            </th>
+                                            <th>
+                                                Municipality
+                                            </th>
+                                            <th>
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="searchList.length == 0">
+                                            <td class="text-danger text-center" colspan="2">
+                                                Sorry Can't find it in KAAGAPAY Producers Database
+                                            </td>
+                                            <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#manualModal">Add it</button> </td>
+                                        </tr>
+                                        <tr ng-repeat="sd in searchList">
+                                            <td>
+                                                {{pakitaDate ? sd.lastname : sd.lastname}}, {{pakitaDate ? sd.firstname : sd.firstname}}
+                                            </td>
+                                            <td>
+                                                {{pakitaDate ? sd.address.barangay.cityMunicipality.name : sd.cityMunicipality}} , {{pakitaDate ? sd.address.barangay.name : sd.barangay}}
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-info" ng-click="selectedProducer(sd)">Select</button>
+                                            </td>
+                                        </tr>
+                                        <tr ng-hide="pakitaDate">
+                                            <td class="text-center" colspan="3">
+                                                <h6>Non-Verified Beneficiary</h6>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="searchListNVB.length == 0" ng-hide="pakitaDate">
+                                            <td class="text-danger text-center" colspan="2">
+                                                Sorry Can't find it in KAAGAPAY Producers Database
+                                            </td>
+                                            <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#manualModal">Add it</button> </td>
+                                        </tr>
+                                        <tr ng-repeat="sd in searchListNVB">
+                                            <td colspan="3" class="text-center text-danger" ng-show="searchListNVB.length == 0"> No result found.</td>
+                                            <td> {{sd.lastname}}, {{sd.firstname}}</td>
+                                            <td> {{sd.cityMunDesc}}, {{sd.brgyDesc}}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-info" ng-click="selectedProducer(sd)">Select</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-center">
+                                                <label class="label label-success label-rounded" style="font-size:15px">{{SelectedProducerData}}</label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <div class="form-group has-feedback has-feedback-left">
+                                            <select id="selectCat4" style="width:100%;" class="form-control" ng-change="getCommodity(per)" ng-model="per.productID">
+                                                <option value=""></option>
+                                                <option ng-repeat="item in vegeList | orderBy:'productName'" value="{{item.productID}}">{{item.productName}} ({{item.unit}})</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5" ng-hide="isPasalubong">
+                                        <div class="form-group">
+                                            <select class="form-control" ng-model="per.class">
+                                                <option value="" selected>Select Class</option>
+                                                <option value="A">Class A</option>
+                                                <option value="B">Class B</option>
+                                                <option value="Bundle">Bundle</option>
+                                                <option value="Sack">Sack</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5" ng-show="isPasalubong">
+                                        <div class="form-group">
+                                            <select class="form-control" ng-model="per.priceID" >
+                                                <option value="" selected>Select Price</option>
+                                                <option ng-repeat="a in pricesH" value="{{a.priceID}}">{{a.price | currency :"₱":2}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="form-group has-feedback has-feedback-left"> 
+                                    <input required type="number" step="any" placeholder="Please Enter Quantity(KG,PCS,Bundle,Sack)" class="form-control" ng-model="per.txtStockOverall" />
+                                    <div class="form-control-feedback">
+                                        <i class="icon-hash text-muted"></i>
+                                    </div>
+                                    <label class="text-danger" ng-show="txtStockFiltered" >This field is required.</label>
+                                </div>
+                                <div class="form-group has-feedback has-feedback-left">
+                                    <input required type="number" placeholder="Price..." class="form-control" ng-model="per.txtAmount" />
+                                    <div class="form-control-feedback">
+                                        <i class="icon-price-tag text-muted"></i>
+                                    </div>
+                                    <label class="text-danger" ng-show="txtAmountFiltered">This field is required.</label>
+                                </div>
+                                <div class="form-group has-feedback has-feedback-left">
+                                    <b>Amount : ₱{{per.txtStockOverall * per.txtAmount}}</b>
+                                </div>
+                                <div class="form-group has-feedback has-feedback-left">
+                                    <input placeholder="Description if any" class="form-control" ng-model="per.txtDescription" />
+                                    <div class="form-control-feedback">
+                                        <i class="icon-design text-muted"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback has-feedback-left">
+                                    <input type="date" class="form-control" ng-model="KP_Datetime" ng-hide="pakitaDate" ng-show="isPasalubong" />
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-change="isPasaLB()" ng-model="isPasalubong">
+                                        Is this product belongs to Pasalubong Category?
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" ng-disabled="isPasalubong"  ng-click="hideDatetime()" type="radio" value="kaagapay" name="kaagapay" id="kaagapay">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Kaagapay Beneficiaries
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" ng-disabled="isPasalubong" ng-click="showDatetime()" type="radio" value="dosPuntos" name="kaagapay" id="kaagapay">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        People Organization Members
+                                    </label>
+                                </div>
+                                <div class="form-group has-feedback has-feedback-left" ng-show="pakitaDate">
+                                    <input type="datetime-local" class="form-control" ng-model="DP_datetime" />
+                                </div>
+                                
+                                @*<input id="pn.logDate" ng-model="pn.logDate" class="form-control" style="margin-top:20px;" type="datetime-local" />*@
+                                <br>
+                                <div class="form-group">
+                                    <button type="submit" ng-click="addStocks(per)" ng-disabled="addButton" class="btn btn-primary col-sm-12 pull-right"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="row">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="bg-blue">
+                                        <th>Beneficiary</th>
+                                        <th>Commodity</th>
+                                        <th>Class</th>
+                                        <th>Address</th>
+                                        <th>Quantity(kg)</th>
+                                        <th>Price</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="per in holdObjectDatas">
+                                        <td>{{per.Beneficiary}}</td>
+                                        <td>{{per.Commodity}}</td>
+                                        <td>{{per.classType}}</td>
+                                        <td>{{per.barangay != undefined ? per.address :'nothing to show'}}</td>
+                                        <td>{{per.kilo}}</td>
+                                        <td>{{per.amount}}</td>
+                                        <td>{{per.kilo * per.amount}}</td>
+                                        <td>
+                                            <button ng-click="removeItem($index)" class="btn btn-info btn-circle" type="button" value="per.isReported"><i class="fa fa-times"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div>
+                        <button ng-disabled="saveDis" class="btn btn-primary col-sm-3 pull-right demo2" type="button" ng-click="updateStocksOverAll(per)"><i class="fa fa-check"></i>&nbsp;Save</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bd-example-modal-sm" id="manualModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Beneficiary</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>First Name <small>(required)</small></label>
+                            <input required ng-model="s.firstname" name="firstname" type="text" class="form-control" placeholder="Juan...">
+                        </div>
+                        <div class="form-group">
+                            <label>Middle Name </label>
+                            <input ng-model="s.middlename" name="firstname" type="text" class="form-control" placeholder="Torres...">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name <small>(required)</small></label>
+                            <input required ng-model="s.lastname" name="firstname" type="text" class="form-control" placeholder="Dela Cruz...">
+                        </div>
+                        <label>Municipality<small>(required)</small></label>
+                        <div class="form-group">
+                            <select required id="selectMun" style="width:100%" ng-change="munChange(s.citymunCode)" class="form-control" ng-model="s.citymunCode">
+                                <option value=""></option>
+                                <option value="{{d.citymunCode}}" ng-repeat="d in municipality">{{d.cityMunDesc}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Barangay<small>(required)</small></label>
+                            <select required id="selectBrgy" style="width:100%" class="form-control" ng-model="s.brgyCode">
+                                <option value=""></option>
+                                <option value="{{d.brgyCode}}" ng-repeat="d in brgy">{{d.brgyDesc}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Purok</label>
+                            <input ng-model="s.purokDesc" name="firstname" type="text" class="form-control" placeholder="Purok...">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" ng-click="addNonBeneficiary()">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        $("#selectCat4").select2({
+            placeholder: 'Select a Commodity',
+            allowClear: true,
+            tags: true
+        });
+        $("#selectMun").select2({
+            placeholder: 'Select a Municipality',
+            allowClear: true,
+            tags: true,
+            dropdownParent: $("#manualModal")
+        });
+        $("#selectBrgy").select2({
+            placeholder: 'Select a Barangay',
+            allowClear: true,
+            tags: true,
+            dropdownParent: $("#manualModal")
+        });
+    });
+</script>
+

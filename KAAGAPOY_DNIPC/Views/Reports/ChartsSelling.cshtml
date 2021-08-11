@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "ChartsSelling";
+}
+<script src="~/AngularJS/NODE/chartjs-plugin.js"></script>
+<script src="~/AngularJS/NODE/chart-datatables-labels.js"></script>
+
+
+@*<script src="~/AngularJS/NODE/chart.min.js"></script>*@
+<script src="~/AngularJS/Scripts/Reports/chartSelling.js"></script>
+<section ng-app="App_sellChart" ng-controller="Ctrl_sellChart">
+    <div class="content-wrapper " style="width:100%;display:inline-block">
+        <div class="page-header">
+            <div class="page-header-content hideThis">
+                <div class="page-title">
+                    <h4>
+                        <i class="icon-arrow-left52 position-left"></i>
+                        <span class="text-semibold">Reports</span> - Selling Charts
+                    </h4>
+                    <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                </div>
+                <div class="heading-elements">
+                    <div class="heading-btn-group">
+                        <a href="#" class="btn btn-link btn-float has-text" ng-click="printPage()" ng-show="hideWhenPrint"><i class="icon-printer text-primary"></i><span>Show Printable Data</span></a>
+                        <a href="#" class="btn btn-link btn-float has-text" ng-show="showPrintData" ng-click="GoBack()"><i class="icon-redo2 text-primary"></i> <span>Go Back</span></a>
+                        @*<a href="#" class="btn btn-link btn-float has-text"><i class="icon-calculator text-primary"></i> <span>Invoices</span></a>
+                            <a href="#" class="btn btn-link btn-float has-text"><i class="icon-calendar5 text-primary"></i> <span>Schedule</span></a>*@
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="panel panel-flat">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">
+                            Selling Charts Overview
+                            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                        </h5>
+                        <div class="heading-elements">
+                            <ul class="icons-list">
+                                <li><a data-action="collapse"></a></li>
+                                <li><a data-action="reload"></a></li>
+                                <li><a data-action="close"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                                    <input type="text" class="form-control" name=" daterange" id="demo" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <h3 class="text-center">Top Sold Commodity</h3>
+                            <div class="chartCon">
+                                <canvas id="myChart" @*style="background-color: #75f786;"*@></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                           <table class="table table-striped" style="border: 1px solid; padding: 10px; box-shadow: -5px 4px #888888; ">
+                               <thead>
+                                   <tr>
+                                       <th>Product Name</th>
+                                       <th>Class Type</th>
+                                       <th>QTY</th>
+                                       <th>Resiko</th>
+                                       <th>In KG/Pack</th>
+                                       <th></th>
+                                       <th>Price</th>
+                                       <th></th>
+                                       <th>Total Price</th>
+                                   </tr>
+                               </thead>
+
+                               <tbody ng-repeat="d in ledgerDetails">
+
+                                  
+                                   <tr ng-repeat="v in d.displayLed[0].summariesReport | orderBy:'productName'">
+                                       <td>{{v.productName}}</td>
+                                       <td>{{v.classType}}</td>
+                                       <td><b style="color:#05f50d">{{v.producePacksInKG[0][0] == null ?  (v.qty+ v.resikoKG) +' kg': (v.qty- v.resikoKG) +'('+ v.producePacksInKG[0][0]+ ' ' + v.unit[0][0] +')' }} </b></td>
+                                       <td>{{v.resikoKG}} kg</td>
+                                       <td>{{v.producePacksInKG[0][0] == null ?  v.qty +' kg': (v.qty * v.producePacksInKG[0][0] | currency :"":2) +' '+ v.unit[0][0]}}</td>
+                                       <td>x</td>
+                                       <td>{{v.pricePerKG == null ? (v.price | currency :"₱":2) : (v.pricePerKG | currency :"₱":2)}}</td>
+                                       <td>=</td>
+                                       <td>{{v.pricePerKG == null ? (v.price * (v.qty) | currency :"₱":2) : (v.pricePerKG * (v.qty) | currency :"₱":2)}}</td>
+                                   </tr>
+
+                               </tbody>
+                               <div class="text-center" ng-show="ledgerDetails.length == 0">
+                                   <h3 class="text-danger-400">No Data Today</h3>
+                               </div>
+                               <tfoot style="vertical-align:middle">
+                                   <tr>
+                                       <td></td>
+                                       <td></td>
+                                       <td></td>
+                                       <td>Resiko: {{resikaSum  + ' kg'}}</td>
+                                       <td>Purchases: {{resultOfSum  + ' kg' }}</td>
+
+                                       <td></td>
+                                       <td></td>
+                                       <td style="width:40px"> </td>
+                                       <td>Grand Total: {{computeAmount | currency :"₱":2}}</td>
+                                   </tr>
+                               </tfoot>
+                           </table>
+                        </div>
+                    </div>
+                 
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

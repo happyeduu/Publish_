@@ -1,0 +1,230 @@
+﻿@{
+    ViewBag.Title = "Spoilage";
+}
+<script src="~/AngularJS/Scripts/Inventory/Spoilage.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<style>
+    .thumbnail {
+        float: left;
+        height: 100px;
+        margin: 10px;
+    }
+</style>
+<div class="page-header">
+    <div class="page-header-content">
+        <div class="page-title">
+            <h4>
+                <i class="icon-arrow-left52 position-left"></i>
+                <span class="text-semibold">Add Spoilage</span>
+            </h4>
+            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+            <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+        </div>
+
+        <div class="heading-elements">
+            <div class="heading-btn-group">
+                <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><span class="icon-office position-left"></span> Add Spoilage</button>
+             </div>
+        </div>
+    </div>
+    <div class="breadcrumb-line breadcrumb-line-component">
+        <a class="breadcrumb-elements-toggle"><i class="icon-menu-open"></i></a>
+        <ul class="breadcrumb">
+            <li>
+                <a href="/test/"><i class="icon-home2 position-left"></i> Home</a>
+            </li>
+            <li class="active">Add Spoilage</li>
+        </ul>
+
+    </div>
+</div>
+
+<div class="content" ng-app="app_spoilage" ng-controller="Ctrl_spoilage">
+    <div class="panel panel-flat">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                        <select required id="selectMonth" style="width:100%;" ng-change="monthChange(monthNum)" class="form-control" ng-model="monthNum">
+                            <option value="">Select Month</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-center text-green-800"><b>Only Data Shown that have Spoilage</b></p>
+
+                </div>
+            </div>
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>Commodity</th>
+                        <th>Stocks</th>
+                        <th>Spoilage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="s in productWithSpoilage">
+                        <td>{{s.productName}}</td>
+                        <td>{{s.stocks}} kg</td>
+                        <td>{{s.totSpoil}} kg</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td class="text-right">Total Spoilage</td>
+                        <td>{{productWithSpoilage[0].sumSpoil}} kg</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            @*<div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="~/Product/UploadPhoto" id="upload" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <center>
+                                    <img alt="image" class="img-circle" id="imagedata" src="~/Images/icon-small-dnnk.png" style="object-fit:cover; width:120px;height:120px;padding:10px 10px 10px 10px;" onclick="i()" />
+                                    <br /><small>Click the image to upload a photo</small>
+                                </center>
+                                <input onchange="upimg(this)" type="file" class="ladda-button btn btn-danger btn-file btn-block" id="img" name="img" accept="image/jpeg, image/png" style="display: none;">
+                                <article>
+                                    <label for="files">Select multiple files: </label>
+                                    <input id="files" type="file" multiple />
+                                    <output id="result" />
+                                </article>
+                            </div>
+                            <button type="submit" class="btn btn-danger block full-width m-b">Save</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>*@
+
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Spoilage</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info alert-styled-left text-blue-800 content-group">
+                        <span class="text-semibold">Note!</span>
+                        <span> You're now adding Spoilage.</span>
+                        @*<button type="button" class="close" data-dismiss="alert">×</button>*@
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left">
+                        <select required id="selectPName" style="width:100%;" @*ng-change="getCommodity(item.productID)"*@ class="form-control" ng-model="productID">
+                            <option value="">Select Commodity</option>
+                            <option ng-repeat="item in listProducts | orderBy:'productName'" value="{{item.productID}}">{{item.productName}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input type="number" class="form-control" ng-model="txtKG" placeholder="Spoilage in PCS/PCK" />
+                        <div class="form-control-feedback">
+                            <i class="icon-hash text-muted"></i>
+                        </div>
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input type="text" class="form-control" ng-model="txtDescription" placeholder="Description..." />
+                        <div class="form-control-feedback">
+                            <i class="icon-pencil3 text-muted"></i>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="removeSpoilageByKg()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        $("#selectPName").select2({
+            placeholder: 'Select a Product',
+            allowClear: true
+
+        });
+
+    });
+</script>
+<script>
+
+    render();
+    function render() {
+        //Check File API support
+        if (window.File && window.FileList && window.FileReader) {
+            var filesInput = document.getElementById("files");
+
+            filesInput.addEventListener("change", function (event) {
+                var files = event.target.files; //FileList object
+                var output = document.getElementById("result");
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    //Only pics
+                    if (!file.type.match('image'))
+                        continue;
+                    var picReader = new FileReader();
+                    picReader.addEventListener("load", function (event) {
+                        var picFile = event.target;
+                        var div = document.createElement("div");
+                        div.innerHTML = "<img class='thumbnail' src='" + picFile.result + "'" +
+                                "title='" + picFile.name + "'/>";
+                        output.insertBefore(div, null);
+                    });
+                    //Read the image
+                    picReader.readAsDataURL(file);
+                }
+            });
+        }
+        else {
+            console.log("Your browser does not support File API");
+        }
+    }
+    function i() {
+        $("#img").click()
+    }
+    function upimg(file) {
+
+        var reader = new FileReader();
+        console.log()
+        reader.onload = function (e) {
+            $("#imagedata").attr('src', e.target.result)
+        }
+        reader.readAsDataURL(file.files[0])
+    }
+</script>
+

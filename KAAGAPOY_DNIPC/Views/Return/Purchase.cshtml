@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "Purchase";
+}
+<script src="~/AngularJS/Scripts/Return/Prurchase.js"></script>
+<script src="~/AngularJS/NODE/select2.js"></script>
+<h2>Purchase</h2>
+<div ng-app="App_return" ng-controller="Ctrl_return">
+
+    <div class="page-header">
+        <div class="panel panel-flat">
+            <div class="panel-heading">
+                <h5 class="panel-title">
+                    Search Order by Ledger ID
+                    <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                </h5>
+            </div>
+            <div class="panel-body">
+                <form class="main-search ng-pristine ng-valid">
+                    <div class="input-group content-group">
+                        <div class="has-feedback has-feedback-left">
+                            <input type="text" class="form-control input-xlg" ng-model="txtLedgerID" placeholder="LD-123456...">
+                            <div class="form-control-feedback">
+                                <i class="icon-search4 text-muted text-size-base"></i>
+                            </div>
+                        </div>
+                        <div class="input-group-btn">
+                            <button type="submit" ng-click="searchLD()" class="btn btn-primary btn-xlg">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-body">
+                <form action="#" class="main-search ng-pristine ng-valid">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Date Time</th>
+                                <th>Product Name</th>
+                                <th>QTY</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody ng-repeat="d in ledgerDetails">
+                            <tr>
+                                <th rowspan="{{d.details.length + 1}}" scope="rowgroup">{{d.logDate | date:'medium'}}</th>
+                            </tr>
+                            <tr ng-repeat="v in d.details">
+                                <td>{{v.productName}}</td>
+                                <td><b style="color:#05f50d">{{v.qty}} {{v.unit}}</b></td>
+                                <td>{{v.price}}</td>
+                                <td>{{v.qty * v.price}}</td>
+                                <td>
+                                    <button class="button" type="button" ng-click="removeProduct(v)"><i class="icon-trash"></i></button>
+                                    <button class="button" type="button" ng-click="changeProduct(v)" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="icon-undo"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>Grand Total: {{ledgerDetails[0].grandTotal}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change/Return item(s)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Produce Packs In KG</th>
+                                <th>Price</th>
+                                <th>QTY</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="p in itemChoose">
+                                <td>{{p.productName}}</td>
+                                <td>{{p.producePacksInKG}} {{p.unit}}</td>
+                                <td>{{p.price}}</td>
+                                <td>{{p.qty}}</td>
+                                <td>{{p.qty * p.price}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group has-feedback has-feedback-left">
+                        <select required id="selectProd" style="width:100%;" class="form-control" ng-change="selectedProduct(per)" ng-model="per.productID">
+                            <option value="">Select Product</option>
+                            <option ng-repeat="item in prodList" ng-if="item.pricesH.length != 0" value="{{item.productID}}">{{item.productName}}@*{{item.productName}} {{item.price}}*@</option>
+                        </select>
+                    </div>
+                    <div ng-hide="per == null">
+                        <div class="form-group has-feedback has-feedback-left">
+                            <select required id="selectPrice" style="width:100%;" class="form-control" ng-change="ngPriceChange()"  ng-model="selectedPrice">
+                                <option value="">Select Price</option>
+                                <option ng-repeat="d in viewPrices" value="{{d.priceID}}">{{d.price| currency :"₱":2}} / Produce Packs : {{d.producePacks}} / Produce Packs In {{d.unit}} : {{d.producePacksInKG}}@*{{item.productName}} {{item.price}}*@</option>
+                            </select>
+                        </div>
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input class="form-control" placeholder="Enter QTY" ng-change="qtyChange(selectedPrice)" ng-model="txtQTY" />
+                        </div>
+                       
+                        <p style="text-decoration:solid">Grand Total: {{txtQTY * getPrice}} </p>
+                    </div> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="modalConfirmChange()">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+          
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#selectProd").select2({
+            placeholder: 'Select a Product',
+            allowClear: true
+        });
+    });
+    $(function () {
+        $("#selectPrice").select2({
+            placeholder: 'Select a Product',
+            allowClear: true
+        });
+    });
+</script>

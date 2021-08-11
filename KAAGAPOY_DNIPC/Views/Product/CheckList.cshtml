@@ -1,0 +1,321 @@
+﻿@{
+    ViewBag.Title = "CheckList";
+}
+<link href="~/Content/print.css" rel="stylesheet" />
+<script src="~/AngularJS/Scripts/Product/checkList.js"></script>
+<style>
+    .paymentNature-row {
+        background-color: #18A689;
+        color: #FFFFFF;
+        margin: 1px;
+        font-size: xx-large;
+    }
+
+    .title-nature {
+        font-size: larger;
+        font-weight: bold;
+    }
+
+    .select-editable {
+        position: relative;
+        display: inline-block;
+    }
+
+    .sub_r-content {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: x-large;
+    }
+
+    li {
+        cursor: auto;
+    }
+        /*li:hover{
+
+        background-color:cornflowerblue !important;
+
+    }*/
+        li:active {
+            /*color:white !important;*/
+        }
+    .ibox-content {
+        padding-bottom: 5px;
+    }
+
+    .no-pad {
+        padding: 0;
+        margin-left: -17px;
+        margin-right: 0;
+    }
+
+    .orBox {
+        margin-left: 30px;
+    }
+
+    .dr-div:hover {
+        background-color: #4EB8D4;
+        color: white;
+    }
+
+    .bgbutton {
+        background-color: #4EB8D4;
+        color: white;
+        font-weight: bolder;
+    }
+
+    .page {
+        width: 8.5in;
+        min-height: 14in;
+        margin-left: 150px;
+        box-shadow: 1px 1px 2px 2px;
+        background-color: white;
+    }
+
+
+
+    .content-container {
+        font-family: Arial;
+        margin: 0.5in 0.5in .5in 0.5in;
+    }
+
+    .heading {
+        text-align: center;
+        font-size: 19px;
+        color: black;
+        font-weight: bold;
+    }
+
+    .head-address {
+        color: black;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .title-row {
+        margin-bottom: 30px;
+        margin-top: 30px;
+    }
+
+    .content-text {
+        color: black;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .content-text-value {
+        color: black;
+        font-size: 15px;
+        font-weight: 500;
+        margin-left: 0;
+    }
+
+    .content-text-value2 {
+        color: black;
+        font-size: 15px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .box {
+        width: 30px;
+        height: 20px;
+        border: 2px solid black;
+    }
+
+    .table-data {
+        border: 2px solid black;
+        width: 100%;
+    }
+
+    .cell-text {
+        text-align: center;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        border: 1px solid black;
+        color: black;
+    }
+
+    .row {
+        color: black;
+    }
+
+    signatory-title {
+        color: black;
+        font-size: small;
+        font-weight: 600;
+    }
+
+    .top-space {
+        margin-top: 40px;
+    }
+
+
+
+    select:required:invalid {
+        color: gray;
+    }
+
+    option[value=""][disabled] {
+        display: none;
+    }
+
+    .indent-td {
+        margin-left: 30px;
+    }
+
+    option {
+        color: black;
+    }
+
+    .panel {
+        border-style: none;
+    }
+
+</style>
+<section ng-app="app_checkList" ng-controller="Ctrl_checkList">
+    <div class="page-header hideThis">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4>
+                    <i class="icon-arrow-left52 position-left"></i>
+                    <span class="text-semibold">KAAGAPAY Checklist</span>
+                </h4>
+                <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <button class="btn btn-success" ng-click="printPage()"><span class="icon-office position-left"></span> Print Preview</button>
+                    <button class="btn btn-success" onclick="window.print();"><span class=" icon-office position-left"></span> Print </button>
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb-line breadcrumb-line-component">
+            <a class="breadcrumb-elements-toggle"><i class="icon-menu-open"></i></a>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/test/"><i class="icon-home2 position-left"></i> Home</a>
+                </li>
+                <li class="active">Add Spoilage</li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="content">
+        <div class="panel panel-flat hideThis" ng-hide="hideWhenPrint">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" colspan="4">KAAGAPAY Checklist</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Date</th>
+                                    <th colspan="2">Control No:</th>
+                                </tr>
+                                <tr>
+                                    <th>PRODUCTS</th>
+                                    <th>KL/PC</th>
+                                    <th>AMOUNT</th>
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{s.productName}}p</td>
+                                    <td>{{s.stocks}}_________</td>
+                                    <td>{{s.totSpoil}}__________</td>
+                                    <td>{{s.totSpoil}}__________</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>TOTAL:________</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Serve By:</td>
+                                    <td colspan="2" class="text-right">Payment Recieved By:</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Commodity</th>
+                                    <th>Stocks</th>
+                                    <th>Spoilage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="s in productWithSpoilage">
+                                    <td>{{s.productName}}</td>
+                                    <td>{{s.stocks}} kg</td>
+                                    <td>{{s.totSpoil}} kg</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td class="text-right">Total Spoilage</td>
+                                    <td>{{productWithSpoilage[0].sumSpoil}} kg</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="printPage" class="page ibox float-e-margins" ng-show="showPrintData">
+            <div class="row">
+                <div class="col-md-6" >
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="4">KAAGAPAY Checklist</th>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Date</th>
+                                <th colspan="2">Control No:</th>
+                            </tr>
+                            <tr>
+                                <th>PRODUCTS</th>
+                                <th>KL/PC</th>
+                                <th>AMOUNT</th>
+                                <th>TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{s.productName}}p</td>
+                                <td>{{s.stocks}}_________</td>
+                                <td>{{s.totSpoil}}__________</td>
+                                <td>{{s.totSpoil}}__________</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>TOTAL:________</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Serve By:</td>
+                                <td colspan="2" class="text-right">Payment Recieved By:</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

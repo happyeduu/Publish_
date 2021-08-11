@@ -1,0 +1,264 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+<script src="~/AngularJS/Scripts/Producer/register.js"></script>
+
+<section ng-app="app_reg" ng-controller="ctrl_reg" ng-init="pageLoad()">
+    <div id="addProducer" class="modal fade">
+        <div class="modal-dialog">
+            <form class="form-horizontal" ng-submit="addProducer(prod)">
+                <div class="modal-content">
+                    <div class="modal-header bg-success">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h6 class="modal-title">
+                            <span class="icon-office position-left"></span> Add Producer
+                        </h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            @*<div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="col-lg-12">
+                                            <img id="output" src="@Url.Content("~/images/image.png")" class="img-responsive" />
+                                            <input type="file" accept='image/*' class="form-control hidden" value="" id="inputImage" onchange="viewImg(this)" />
+                                            <label for="inputImage" class="cursor-pointer btn btn-block btn-success" style="border-radius: 0">
+                                                <i class="icon-image2 position-left"></i>
+                                                Upload Photo
+                                                <input type="hidden" id="pic" value="" />
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>*@
+                            <div class="col-md-12">
+                                <div class="form-group"
+                                     ng-class="{'has-error' : businessStatus == 0 && prod.producerName.length > 0, 'has-success' : (businessStatus == 1 && prod.producerName.length > 0)}">
+                                    <div class="col-lg-12">
+                                        <div class="input-group">
+                                            <input required type="text" class="form-control" ng-keyup="checkBusiness(prod.producerName)" ng-keypress="businessStatus == '2'" ng-model="prod.producerName" placeholder="Business Name">
+
+                                            <span class="input-group-addon">
+                                                <i class="icon-cancel-circle2" ng-if="businessStatus == 0 && prod.producerName.length > 0"></i>
+                                                <i class="icon-check" ng-if="businessStatus != 0"
+                                                   ng-class="businessStatus == 1 ? 'text-success' : 'text-grey-300'"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <input type="text" required class="form-control" ng-model="prod.owner" placeholder="Proprietor's Name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <input type="text" required class="form-control" ng-model="prod.address" placeholder="Complete Business Address">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <select required ng-init="prod.legalStatus = ''" class="form-control" ng-class="{'text-grey-300' : prod.legalStatus == ''}" ng-model="prod.legalStatus" placeholder="Legal Status">
+                                            <option value="" disabled>Legal Status</option>
+                                            <option value="1">Sole Proprietorship</option>
+                                            <option value="2">Partnership</option>
+                                            <option value="3">Corporation</option>
+                                            <option value="5">N/A</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <input type="text" required class="form-control" ng-model="prod.natureOfBusiness" placeholder="Nature of Business">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <input type="number" required class="form-control" ng-model="prod.employmentSize" placeholder="Company Size ">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <input type="text" required class="form-control" ng-model="prod.contactNo" placeholder="Phone Number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <input type="email" class="form-control" ng-model="prod.emailAddress" placeholder="Email Address">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id="addProducerAlert" class="alert alert-danger alert-bordered hidden" style="margin-bottom: 0;">
+                            <i class="icon-cross"></i>
+                            <span class="text-semibold">Oh snap!</span>
+                            Business name is already registered.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-block btn-success">
+                            <i class="icon-floppy-disk position-left"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4>
+                    <i class="icon-arrow-left52 position-left"></i>
+                    <span class="text-semibold">Producers Library</span>
+                </h4>
+                <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+                <a class="heading-elements-toggle"><i class="icon-more"></i></a>
+            </div>
+
+            <div class="heading-elements">
+                <div class="heading-btn-group">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addProducer"><span class="icon-office position-left"></span> Add Producer</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="breadcrumb-line breadcrumb-line-component">
+            <a class="breadcrumb-elements-toggle"><i class="icon-menu-open"></i></a>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/test/"><i class="icon-home2 position-left"></i> Home</a>
+                </li>
+                <li class="active">Producers Library</li>
+            </ul>
+
+        </div>
+
+    </div>
+    <div class="content">
+
+        <!-- Detached content -->
+        <div class="container-detached">
+            <div class="content-detached">
+
+                <!-- Grid -->
+                <div class="row">
+                    <div id="prodNoResult" class="col-lg-12 text-center text-grey-600" style="display: none; margin-top: 100px;">
+                        <i class="icon-search4" style="font-size: 100px;"></i>
+                        <h1> <span class="text-black">OOPS!</span> No Results Found</h1>
+                        <label for="prodquery" ng-click="_searchAgain()" class="btn btn-success">Search Again</label>
+                    </div>
+                    <div id="results" class="col-lg-3 col-sm-6 col-xs-12" ng-repeat="p in producers">
+                        <style>
+                            .module {
+                                width: auto;
+                                overflow: hidden;
+                                height: 250px;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                            }
+
+                            .line-clamp {
+                                display: -webkit-box;
+                                -webkit-line-clamp: 4;
+                                -webkit-box-orient: vertical;
+                            }
+
+                            .dotpot {
+                                width: auto;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                            }
+                        </style>
+
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div class="thumb thumb-fixed">
+                                    <img class="img-responsive prodpic" ng-src="~/Images/infinity.png" onerror="loadDefaultPic(this)" src="~/../images/image.png">
+                                </div>
+                            </div>
+
+                            <div class="panel-body panel-body-accent pt-10 module line-clamp">
+                                <h6 class="media-heading; text-center ellipsis text-black ng-binding dotpot">
+                                    {{ p.producerName }}
+                                </h6>
+                                <p class="dotpot">
+                                    <i class="icon-user-tie mr-10"></i>
+                                    <span class="ng-binding">{{ p.owner }}</span>
+                                </p>
+                                <p class="dotpot">
+                                    <i class="icon-office mr-10"></i>
+                                    <span class="ng-binding">{{ p.address }}</span>
+                                </p>
+
+                                <p class="dotpot">
+                                    <i class="icon-envelop5 mr-10"></i>
+                                    <span class="ng-binding">{{ p.emailAddress }}</span>
+                                </p>
+                                <p class="dotpot">
+                                    <i class="icon-phone mr-10"></i>
+                                    <span class="ng-binding">{{ p.contactNo}}</span>
+                                </p>
+
+                                <a @*href="/test/Producer/ProducersProfile?id=1061"*@ class="btn btn-primary btn-block mt-20 mb-10">
+                                    <i class="icon-eye4"></i>
+                                    View Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="sidebar-detached">
+            <div class="sidebar sidebar-default sidebar-separate">
+                <div class="sidebar-content">
+
+                    <!-- Categories -->
+                    <div class="sidebar-category">
+                        <div class="category-title">
+                            <span>Categories</span>
+                        </div>
+
+                        <div class="category-content">
+                            <div class="has-feedback has-feedback-left form-group">
+                                <input id="prodquery" type="search" ng-change="searchProducer()" ng-model="prodquery" class="form-control ng-pristine ng-untouched ng-valid ng-empty" placeholder="Search..." ng-focus="$parent.prodquery = ''">
+                                <div class="form-control-feedback">
+                                    <i class="icon-search4 text-size-small text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-content no-padding">
+                            <ul class="navigation navigation-alt navigation-accordion navigation-sm no-padding-top">
+                                <li class="active">
+                                    <a href="" class="">
+                                        Categories will be added soon
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
